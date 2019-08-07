@@ -10,6 +10,7 @@ namespace app\admin\controller\merchant;
 
 use app\admin\controller\AuthController;
 use app\admin\model\order\StoreOrder;
+use service\JsonService as Json;
 use app\admin\model\user\User;
 use app\admin\model\merchant\Merchant as MerchantModel;
 use app\admin\model\wechat\WechatUser as UserModel;
@@ -92,6 +93,7 @@ class Merchant extends AuthController
             ['limit',20],
             ['merchant_name',''],
             ['account',''],
+            ['order',''],
         ]);
         return Json::successlayui(MerchantModel::getUserList($where));
     }

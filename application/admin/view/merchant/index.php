@@ -250,7 +250,7 @@
         })
     });
     layList.form.render();
-    layList.tableList('userList',"{:Url('merchant/get_user_list')}",function () {
+    layList.tableList('userList',"{:Url('merchant.merchant/get_user_list')}",function () {
         return [
             {type:'checkbox'},
             {field: 'id', title: '编号', width:'6%',event:'id'},
