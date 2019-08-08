@@ -60,112 +60,17 @@
                 <form class="layui-form">
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">姓名编号：</label>
+                            <label class="layui-form-label">商户名称：</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="nickname" lay-verify="nickname" style="width: 100%" autocomplete="off" placeholder="请输入姓名、编号" class="layui-input">
-                            </div>
-                        </div>
-                        <!--<div class="layui-inline">
-                            <label class="layui-form-label">用户类型：</label>
-                            <div class="layui-input-inline">
-                                <select name="user_type" lay-verify="user_type">
-                                    <option value="">全部</option>
-                                    <option value="wechat">微信公众号</option>
-                                    <option value="routine">微信小程序</option>
-                                </select>
-                            </div>
-                        </div>-->
-                        <div class="layui-inline">
-                            <label class="layui-form-label">状　　态：</label>
-                            <div class="layui-input-inline">
-                                <select name="status" lay-verify="status">
-                                    <option value="">全部</option>
-                                    <option value="1">正常</option>
-                                    <option value="0">锁定</option>
-                                </select>
+                                <input type="text" name="merchant_name" lay-verify="merchant_name" style="width: 100%" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">性　　别：</label>
+                            <label class="layui-form-label">账号：</label>
                             <div class="layui-input-inline">
-                                <select name="sex" lay-verify="sex">
-                                    <option value="">全部</option>
-                                    <option value="1">男</option>
-                                    <option value="2">女</option>
-                                    <option value="0">保密</option>
-                                </select>
+                                <input type="text" name="account" lay-verify="account" style="width: 100%" autocomplete="off" placeholder="请输入商户账号" class="layui-input">
                             </div>
                         </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">身　　份：</label>
-                            <div class="layui-input-inline">
-                                <select name="is_promoter" lay-verify="is_promoter">
-                                    <option value="">全部</option>
-                                    <option value="1">推广员</option>
-                                    <option value="0">普通用户</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">国　　家：</label>
-                            <div class="layui-input-inline">
-                                <select name="country" lay-verify="country" lay-filter='country'>
-                                    <option value=""  selected="selected">请选择国</option>
-                                    <option value="domestic">中国</option>
-                                    <option value="abroad">外国</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-inline" id="province-div">
-                            <label class="layui-form-label">省　　份：</label>
-                            <div class="layui-input-inline">
-                                <select name="province" lay-verify="province" lay-filter='province' id="province">
-                                    <option value="" id="province-top">请选择省</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-inline" id="city-div">
-                            <label class="layui-form-label">市　　区：</label>
-                            <div class="layui-input-inline">
-                                <select name="city" lay-verify="city"  lay-filter='city' id="city">
-                                    <option value="" id="city-top">请选择市</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">消费情况：</label>
-                            <div class="layui-input-inline">
-                                <select name="pay_count" lay-verify="pay_count">
-                                    <option value="">全部</option>
-                                    <option value="-1">0</option>
-                                    <option value="0">1+</option>
-                                    <option value="1">2+</option>
-                                    <option value="2">3+</option>
-                                    <option value="3">4+</option>
-                                    <option value="4">5+</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">访问情况：</label>
-                            <div class="layui-input-inline">
-                                <select name="user_time_type" lay-verify="user_time_type">
-                                    <option value="">全部</option>
-                                    <option value="visitno">时间段未访问</option>
-                                    <option value="visit">时间段访问过</option>
-                                    <option value="add_time">首次访问</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">选择时间：</label>
-                            <div class="layui-input-inline">
-                                <input type="text" class="layui-input time-w" name="user_time" lay-verify="user_time"  id="user_time" placeholder=" - ">
-                            </div>
-                        </div>
-                    </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">
                             <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit="" lay-filter="search" >
@@ -183,12 +88,13 @@
             <div class="ibox-content">
                 <div class="table-responsive">
                     <div class="layui-btn-group conrelTable">
-                        <!--                        <button class="layui-btn layui-btn-sm layui-btn-danger" type="button" data-type="set_status_f"><i class="fa fa-ban"></i>封禁</button>-->
+                                           <!--   <button class="layui-btn layui-btn-sm layui-btn-danger" type="button" data-type="set_status_f"><i class="fa fa-ban"></i>封禁</button>-->
                         <!--                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_status_j"><i class="fa fa-check-circle-o"></i>解封</button>-->
-                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_grant"><i class="fa fa-check-circle-o"></i>发送优惠券</button>
+                        <!--<button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_grant"><i class="fa fa-check-circle-o"></i>发送优惠券</button>-->
                         <!--                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_custom"><i class="fa fa-check-circle-o"></i>发送客服图文消息</button>-->
                         <!--                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_template"><i class="fa fa-check-circle-o"></i>发送模板消息</button>-->
-                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_info"><i class="fa fa-check-circle-o"></i>发送站内消息</button>
+                        <!--<button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_info"><i class="fa fa-check-circle-o"></i>发送站内消息</button>-->
+                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_add"><i class="fa fa-check-circle-o"></i>新增</button>
                         <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="refresh"><i class="layui-icon layui-icon-refresh" ></i>刷新</button>
                     </div>
                     <table class="layui-hide" id="userList" lay-filter="userList">
@@ -202,8 +108,10 @@
                     </script>
                     <script type="text/html" id="barDemo">
                         <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</button>
+
                         <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>禁用</button>
-                        <button type="button" class="layui-btn layui-btn-xs" lay-event="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>
+                        <button type="button" class="layui-btn layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</button>
+
                     </script>
                 </div>
             </div>
@@ -261,16 +169,17 @@
             {field: 'address', title: '地址',align:'center',width:'22%'},
             {field: 'add_time', title: '入驻时间',align:'center',width:'12%'},
             {fixed: 'right', title: '操作', width: '20%', align: 'center', toolbar: '#barDemo'}
+
         ];
     });
     layList.date('add_time');
-    //监听并执行 uid 的排序
+    //监听并执行 id 的排序
     layList.sort(function (obj) {
         var layEvent = obj.field;
         var type = obj.type;
         switch (layEvent){
-            case 'uid':
-                layList.reload({order: layList.order(type,'u.uid')},true,null,obj);
+            case 'id':
+                layList.reload({order: layList.order(type,'u.id')},true,null,obj);
                 break;
      /*       case 'now_money':
                 layList.reload({order: layList.order(type,'u.now_money')},true,null,obj);
@@ -280,18 +189,18 @@
                 break;*/
         }
     });
-    //监听并执行 uid 的排序
+    //监听并执行 id 的排序
     layList.tool(function (event,data) {
         var layEvent = event;
         switch (layEvent){
             case 'edit':
-                $eb.createModalFrame('编辑',layList.Url({a:'edit',p:{uid:data.uid}}));
+                $eb.createModalFrame('编辑',layList.Url({a:'edit',p:{id:data.id}}));
                 break;
             case 'see':
-                $eb.createModalFrame(data.nickname+'停用',layList.Url({a:'see',p:{uid:data.uid}}));
+                $eb.createModalFrame('停用',layList.Url({a:'see',p:{id:data.id}}));
                 break;
             case 'del':
-                $eb.createModalFrame(data.nickname+'删除',layList.Url({a:'del',p:{uid:data.uid}}));
+                $eb.createModalFrame('删除',layList.Url({a:'del',p:{id:data.id}}));
                 break;
         }
     });

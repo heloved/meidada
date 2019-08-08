@@ -11,6 +11,7 @@ namespace app\admin\controller\merchant;
 use app\admin\controller\AuthController;
 use app\admin\model\order\StoreOrder;
 use service\JsonService as Json;
+use service\JsonService;
 use app\admin\model\user\User;
 use app\admin\model\merchant\Merchant as MerchantModel;
 use app\admin\model\wechat\WechatUser as UserModel;
@@ -29,48 +30,7 @@ class Merchant extends AuthController
 {
 
     /**
-     * 商户列表
-     * @return array
-     * @throws \think\Exception
-     * @throws \think\exception\DbException
-     * @throws db\exception\DataNotFoundException
-     * @throws db\exception\ModelNotFoundException
-     */
-    /*public function index()
-    {
-        $where = Util::getMore([
-            ['merchant_name',''],
-            ['link_tel',''],
-        ],$this->request);
-        $this->assign([
-            'where'=>$where,
-        ]);
-
-        $count= DB::name('user_enter')->where($where)->field('*')->count();
-
-        //获取每页显示的条数
-        $limit= Request::instance()->param('limit');
-        //获取当前页数
-        $page= Request::instance()->param('page');
-        //计算出从那条开始查询
-        $tol=($page-1)*$limit;
-
-       $list = DB::name('user_enter')->where($where)->field('*')->limit($tol, $limit)->select();
-
-        $data = array(
-            'code'  => 0,
-            'msg'   => '',
-            'count' => $count,
-            'data'  =>$list,
-        );
-//var_dump($data);die;
-        return $data;
-
-
-
-
-    }*/
-    /**
+     *
      * 显示资源列表
      *
      * @return \think\Response
@@ -96,5 +56,122 @@ class Merchant extends AuthController
             ['order',''],
         ]);
         return Json::successlayui(MerchantModel::getUserList($where));
+    }
+
+    /**
+     * 详情
+     * @return Request
+     */
+    public function getInfo()
+    {
+        $post = $this->request->post();
+
+        if(!isset($post['id'])){
+            JsonService::fail('缺少参数');
+        }
+      $res =  Db::name('merchant')->where('id',$post['id'])->find();
+
+        $this->assign('info',$res);
+
+        return $this->fetch();
+
+    }
+
+    /**
+     * 新增
+     * @return mixed
+     */
+    public function add()
+    {
+
+        return $this->fetch();
+    }
+
+    /*
+     * 编辑
+     */
+    public function edit()
+    {
+        $post = $this->request->post();
+
+        if(!isset($post['id'])){
+            JsonService::fail('缺少参数');
+        }
+        $res =  Db::name('merchant')->where('id',$post['id'])->find();
+
+        $this->assign('info',$res);
+        return $this->fetch();
+    }
+
+    /**
+     * 保存
+     * @return array
+     */
+    public function save(){
+        if($this->request->isPost()){
+            $post = $this->request->post();
+
+            if(isset($post['id'])){
+                $data = array(
+                    'merchant_name'   => $post['merchant_name'],
+                    'province'    => $post['province'],
+                    'city'=>$post['city'],
+                    'district'   => $post['district'],
+                    'address'   => $post['address'],
+                    'account'   => $post['account'],
+                    'pwd'   => $post['pwd'],
+                    'phone'   => $post['phone'],
+                    'status'   => $post['status']
+                );
+                $res = Db::name('merchant')->where('id',$post['id'])->update($data);
+
+            }else{
+                $data = array(
+                    'merchant_name'   => $post['merchant_name'],
+                    'province'    => $post['province'],
+                    'city'=>$post['city'],
+                    'district'   => $post['district'],
+                    'address'   => $post['address'],
+                    'account'   => $post['account'],
+                    'pwd'   => $post['pwd'],
+                    'phone'   => $post['phone'],
+                    'status'   => $post['status'],
+                    'add_time'   => time()
+                );
+
+                $res = Db::name('merchant')->insert($data);
+
+            }
+            if($res){
+                return JsonService::successful('保存成功');
+
+            }else{
+                return JsonService::fail('保存失败');
+            }
+
+
+        }
+    }
+
+
+    /**
+     * 删除
+     * @return Request
+     */
+    public function del()
+    {
+        $post = $this->request->post();
+
+        if(!isset($post['id'])){
+            JsonService::fail('缺少参数');
+        }
+        $res = Db::name('merchant')->where('id',$post['id'])->delete();
+
+        if($res){
+            return JsonService::successful('删除成功');
+
+        }else{
+            return JsonService::fail('删除失败');
+        }
     }
 }
