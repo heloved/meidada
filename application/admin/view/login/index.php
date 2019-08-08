@@ -22,7 +22,7 @@
     <div class="login-group">
         <h3 class="login-logo">
             登录管理系统
-         <!--   <img src="{__ADMIN_PATH}images/logo.png">-->
+           <!-- <img src="{__ADMIN_PATH__}images/logo.png"> -->
         </h3>
         <form role="form" action="{:url('verify')}" method="post">
             <div class="form-group">
