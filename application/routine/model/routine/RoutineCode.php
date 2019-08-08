@@ -31,6 +31,29 @@ class RoutineCode{
         if($resCode) return $resCode;
         else return false;
     }
+
+    /**
+     * 获取带背景的海报new
+     * @param $uid
+     * @return mixed
+     */
+    public function getPoster($uid = 0,$page = '',$id=0,$color = array())
+    {
+        $accessToken = RoutineServer::get_access_token();
+
+        //获取小程序码
+        $code_url = 'https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=' . $accessToken;
+        $post = [
+            "page" => $page,
+            "scene" => $id,
+        ];
+      //  $data = curl_request($code_url, $post);
+        $resCode = RoutineServer::curlPost($code_url,json_encode($post));
+        return  $data = base64_encode($resCode);
+
+
+    }
+
     /**
      * 获取分销二维码
      * @param int $uid  yonghuID

@@ -17,6 +17,11 @@ class Logins extends Controller{
      * 获取用户信息
      * @param Request $request
      * @return \think\response\Json
+     * info[
+     *    pdata.iv = encodeURI(res.iv);
+          pdata.encryptedData = res.encryptedData;
+          pdata.session_key = wx.getStorageSync('session_key');//获取上一步获取的session_key
+     * ]
      */
     public function index(Request $request){
         $data = UtilService::postMore([['info',[]]],$request);//获取前台传的code
@@ -46,6 +51,8 @@ class Logins extends Controller{
 
 
     /**
+     * 小程序登录
+     *
      * 根据前台传code  获取 openid 和  session_key //会话密匙
      * @param string $code
      * @return array|mixed
@@ -61,6 +68,34 @@ class Logins extends Controller{
         if($code == '') return [];
         $info = MiniProgramService::getUserInfo($code);
         return $info;
+    }
+
+
+    /**
+     * 获取用户手机号码
+     * @param Request $request
+     * @return \think\response\Json
+     */
+    public function bind_mobile(Request $request){
+        $data = UtilService::postMore([['info',[]]],$request);
+        $data = $data['info'];
+        unset($data['info']);
+        //解密获取用户信息
+        $data['iv']  = urldecode(urlencode($data['iv']));
+        try{
+            $userInfo = MiniProgramService::encryptor($data['session_key'], $data['iv'], $data['encryptedData']);
+            if(!empty($userInfo['purePhoneNumber'])){
+                if(User::edit(['phone'=>$userInfo['purePhoneNumber']],$this->userInfo['uid']))
+                    return JsonService::success('绑定成功');
+                else
+                    return JsonService::fail('绑定失败');
+            }else
+                return JsonService::fail('获取手机号失败');
+
+        }catch (\Exception $e){
+            return JsonService::fail('error',$e->getMessage());
+        }
+
     }
 
     /**

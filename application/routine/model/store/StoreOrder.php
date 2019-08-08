@@ -815,4 +815,16 @@ class StoreOrder extends ModelBasic
         }
         return $count;
     }
+
+    public function getOrderPink($where,$status = '')
+    {
+        $model = new self();
+        $model = $model->alias('o');
+        $model = $model->field('p.*,o.id,u.avatar');
+        $model = $model->where($where);
+        $model = $model->join('__PINK_ORDER__ p','p.oid = o.id');
+        $list = $model ->order('add_time DESC')->select()->toArray();
+        if($list) return $list->toArray();
+        else return [];
+    }
 }

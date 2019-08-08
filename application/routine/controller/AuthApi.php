@@ -1894,6 +1894,50 @@ class AuthApi extends AuthController{
 
 
     /**
+     * 获取带背景的海报new
+     * @param $uid
+     * @return mixed
+     */
+    public function getPoster($id)
+    {
+        if(!$id) return JsonService::fail('参数错误');
+        $count = StoreProduct::validWhere()->count();
+        if(!$count) return JsonService::fail('参数错误');
+        $path = UPLOAD_PATH.'/codepath/product/';
+        $codePath = $path.$id.'_'.$this->userInfo['uid'].'.jpg';
+        $domain = SystemConfigService::get('site_url').'/';
+      /*  if (file_exists(public_path() . '/poster/' . $id . '.png')) {
+            return response()->json([
+                'status' => 'success',
+                'data' => '/poster/' . $id . '.png'
+            ]);
+        }*/
+
+        if(!file_exists($codePath)){
+            if(!is_dir($path)) mkdir($path,0777,true);
+            $res = RoutineCode::getRoutineCode($this->userInfo['uid'],'pages/product-con/index',$id);
+            if($res){
+                $data = Image::make($res)->resize(200, 200);
+
+                //将二维码插入背景图
+                $img = Image::make($path.'/img/book.png');
+                $img->insert($data, 'bottom-right', 0, 0);
+                $img->save($codePath);
+             /*   return response()->json([
+                    'status' => 'success',
+                    'data' => $codePath
+                ]);*/
+
+             //  $resStatus = json_decode($res,true);
+             //   if(is_array($resStatus)) return JsonService::fail('错误码：'.$resStatus['errcode']);
+            //    else file_put_contents($codePath,$res);
+            }else return JsonService::fail('二维码生成失败');
+        }
+        return JsonService::successful($domain.$codePath);
+
+    }
+
+    /**
      * TODO 产品海报二维码 不存入小程序二维码表中
      * @param int $id
      */
