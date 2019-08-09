@@ -9,6 +9,7 @@ use service\JsonService;
 use service\UtilService;
 use service\MiniProgramService;
 use think\Controller;
+use think\Db;
 use think\Request;
 
 class Login extends Controller{
@@ -17,6 +18,7 @@ class Login extends Controller{
 
     /**
      * 获取用户信息
+     * mr.hu ok
      * @param Request $request
      * @return \think\response\Json
      */
@@ -42,8 +44,11 @@ class Login extends Controller{
         return JsonService::successful($data);
     }
 
+    
     /**
+     * 小程序登录（用户）
      * 根据前台传code  获取 openid 和  session_key //会话密匙
+     * mr.hu ok
      * @param string $code
      * @return array|mixed
      */
@@ -54,6 +59,40 @@ class Login extends Controller{
         $url = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$routineAppId.'&secret='.$routineAppSecret.'&js_code='.$code.'&grant_type=authorization_code';
         return json_decode(RoutineServer::curlGet($url),true);
     }
+
+    /**
+     * 商户登录
+     * @param string $user_name
+     * @param string $user_passwd
+     */
+    public function login()
+    {
+        $post = $this->request->post();
+        if(!$post['user_name']) return JsonService::fail('用户名不能为空');
+        if(!$post['user_passwd']) return JsonService::fail('密码不能为空');
+
+        $user= Db::name('merchant')->where(['account'=>$post['user_name']])->field('id,account,pwd')->find();
+
+         if(strtolower($user['pwd'])==strtolower($post['user_passwd'])){
+             $data['id']=$user['id'];
+             $data['account']=$user['account'];
+            return JsonService::successful($data);
+        } else {
+            return JsonService::fail('登录失败');
+
+        }
+    }
+
+    /**
+     * @return Request
+     */
+    public function restPwd()
+    {
+        return $this->request;
+    }
+
+
+
 
     /**
      * 获取网站logo

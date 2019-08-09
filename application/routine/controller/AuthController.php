@@ -20,7 +20,8 @@ class AuthController extends Controller
     protected function _initialize()
     {
         parent::_initialize();
-        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
+        //接口测试 暂时屏蔽
+      //  if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
             if(!empty(input('openid'))){
                 $uid = WechatUser::openidTouid(input('openid'));
                 $userInfo = User::get($uid);
@@ -31,9 +32,9 @@ class AuthController extends Controller
             if($userInfo) $userInfo->toArray();
             else return JsonService::fail('没有获取用户UID');
             $this->userInfo = $userInfo;//根据uid获取用户信息
-        } else {
+      /*  } else {
             echo "非法访问";exit;
-        }
+        }*/
 
 
     }

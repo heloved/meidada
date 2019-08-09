@@ -40,7 +40,6 @@ class Extract extends AuthController
     public function index()
     {
         $where = Util::getMore([
-            ['nickname',''],
             ['data',''],
         ],$this->request);
         $this->assign([
@@ -57,7 +56,9 @@ class Extract extends AuthController
         $tol=($page-1)*$limit;
 
        $list = DB::name('extract')->where($where)->field('*')->limit($tol, $limit)->select();
-
+        foreach ($list as $k=>$v){
+            $list[$k]['merchant_name']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('merchant_name');
+        }
         $data = array(
             'code'  => 0,
             'msg'   => '',

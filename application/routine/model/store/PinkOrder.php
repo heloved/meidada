@@ -78,14 +78,14 @@ class PinkOrder extends ModelBasic
      * mr.hu
      * @return mixed
      */
-    public static function getPinkAll($cid){
+    public static function getPinkAll($pid){
         $model = new self();
         $model = $model->alias('p');
         $model = $model->field('p.*,u.nickname,u.avatar');
         $model = $model->where('stop_time','GT',time());
-        $model = $model->where('cid',$cid);
+        $model = $model->where('pid',$pid);
         $model = $model->where('k_id',0);
-        $model = $model->where('is_refund',0);
+     //   $model = $model->where('is_refund',0);
         $model = $model->order('add_time desc');
         $model = $model->join('__USER__ u','u.uid = p.uid');
         $list = $model->select();
@@ -95,10 +95,11 @@ class PinkOrder extends ModelBasic
 
     /**
      * 获取还差几人
+     * mr.hu
      */
     public static function getPinkPeople($kid,$people){
         $model = new self();
-        $model = $model->where('k_id',$kid)->where('is_refund',0);
+        $model = $model->where('k_id',$kid)->where('status',1);
         $count = bcadd($model->count(),1,0);
         return bcsub($people,$count,0);
     }

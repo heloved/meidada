@@ -302,7 +302,7 @@ class StorePink extends ModelBasic
      */
     public static function createPink($order){
         $order = StoreOrder::tidyOrder($order,true)->toArray();
-        if($order['pink_id']){//拼团存在
+        if($order['pink_id']){//拼团存在 参团
             $res = false;
             $pink['uid'] = $order['uid'];//用户id
             if(self::isPinkBe($pink,$order['pink_id'])) return false;

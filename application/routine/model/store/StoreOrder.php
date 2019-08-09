@@ -180,7 +180,9 @@ class StoreOrder extends ModelBasic
         Cache::clear('user_order_'.$uid.$key);
     }
 
-    /**生成订单
+    /**
+     * 生成订单
+     * mr.hu
      * @param $uid
      * @param $key
      * @param $addressId
@@ -816,14 +818,14 @@ class StoreOrder extends ModelBasic
         return $count;
     }
 
-    public function getOrderPink($where,$status = '')
+    public static function getOrderPink($where,$status = '')
     {
         $model = new self();
         $model = $model->alias('o');
-        $model = $model->field('p.*,o.id,u.avatar');
+        $model = $model->field('po.*,o.id');
         $model = $model->where($where);
-        $model = $model->join('__PINK_ORDER__ p','p.oid = o.id');
-        $list = $model ->order('add_time DESC')->select()->toArray();
+        $model = $model->join('__PINK_ORDER__ po','po.oid = o.id');
+        $list = $model ->order('add_time DESC')->select();
         if($list) return $list->toArray();
         else return [];
     }
