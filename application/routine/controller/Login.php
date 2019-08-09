@@ -44,7 +44,7 @@ class Login extends Controller{
         return JsonService::successful($data);
     }
 
-    
+
     /**
      * 小程序登录（用户）
      * 根据前台传code  获取 openid 和  session_key //会话密匙
