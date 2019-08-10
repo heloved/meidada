@@ -45,14 +45,40 @@
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>提现列表</h5>
+                <h5>拼团列表</h5>
                 <div class="ibox-tools">
                     <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
                     </a>
                 </div>
             </div>
-
+            <div class="ibox-content" style="display: block;">
+                <div class="alert alert-success alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    搜索
+                </div>
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">拼团名称：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="merchant_name" lay-verify="merchant_name" style="width: 100%" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">账号：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="account" lay-verify="account" style="width: 100%" autocomplete="off" placeholder="请输入商户账号" class="layui-input">
+                            </div>
+                        </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit="" lay-filter="search" >
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>搜索</button>
+                        </label>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -62,36 +88,56 @@
             <div class="ibox-content">
                 <div class="table-responsive">
                     <div class="layui-btn-group conrelTable">
-                        <!--                        <button class="layui-btn layui-btn-sm layui-btn-danger" type="button" data-type="set_status_f"><i class="fa fa-ban"></i>封禁</button>-->
+                                           <!--   <button class="layui-btn layui-btn-sm layui-btn-danger" type="button" data-type="set_status_f"><i class="fa fa-ban"></i>封禁</button>-->
                         <!--                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_status_j"><i class="fa fa-check-circle-o"></i>解封</button>-->
-                        <!-- <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_grant"><i class="fa fa-check-circle-o"></i>发送优惠券</button> -->
+                        <!--<button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_grant"><i class="fa fa-check-circle-o"></i>发送优惠券</button>-->
                         <!--                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_custom"><i class="fa fa-check-circle-o"></i>发送客服图文消息</button>-->
                         <!--                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_template"><i class="fa fa-check-circle-o"></i>发送模板消息</button>-->
-                        <!-- <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_info"><i class="fa fa-check-circle-o"></i>发送站内消息</button> -->
+                        <!--<button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_info"><i class="fa fa-check-circle-o"></i>发送站内消息</button>-->
+                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_add"><i class="fa fa-check-circle-o"></i>新增</button>
+                        <!-- <button class="layui-btn layui-btn-sm" onclick="$eb.createModalFrame(this.innerText,'{:Url('create')}',{h:700,w:1100})">添加产品</button> -->
                         <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="refresh"><i class="layui-icon layui-icon-refresh" ></i>刷新</button>
                     </div>
-
-                    <table class="layui-hide" id="extractLst" lay-filter="extractLst">
+                    <table class="layui-hide" id="pinkList" lay-filter="pinkList">
 
                     </table>
 
 
-
                     <script type="text/html" id="detailData">
-                        提现详情
+                        <a href="#">查看详情</a>
+                    </script>
+
+
+                    <!-- <script type="text/html" id="user_type">
+                        <button type="button" class="layui-btn layui-btn-normal layui-btn-radius layui-btn-xs">{{d.user_type}}</button>
                     </script>
                     <script type="text/html" id="checkboxstatus">
                         <input type='checkbox' name='status' lay-skin='switch' value="{{d.uid}}" lay-filter='status' lay-text='正常|禁止'  {{ d.status == 1 ? 'checked' : '' }}>
+                    </script> -->
+                    
+                    <script type="text/html" id="posterData">
+                        <a href="#">下载{{ d.poster}}</a>
                     </script>
+
+                    <!-- <script type="text/html" id="statusData">
+                        {{#  if(d.status == 0){  }}
+                        已启用
+                        {{#  }else{   }}
+                        已禁用
+                        {{#  }  }}
+                    </script> -->
 
 
                     <script type="text/html" id="handle">
-                        <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</button> -->
-                        <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>禁用</button>
-                        <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="delete"><i class="layui-icon layui-icon-delete"></i>删除</button> -->
+                        <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</button>
+
+                        <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button> -->
+                        {{#  if(d.status == 0){  }}
+                        <button type="button" class="layui-btn layui-btn-xs" lay-event="disable" style="background-color:#FF5722"><i class="layui-icon layui-icon-face-cry"></i>禁用</button>
+                        {{#  }else{   }}
+                        <button type="button" class="layui-btn layui-btn-xs" lay-event="enable"><i class="layui-icon layui-icon-ok"></i>启用</button>
+                        {{#  }  }}
                     </script>
-
-
                 </div>
             </div>
         </div>
@@ -138,26 +184,29 @@
         })
     });
     layList.form.render();
-    layList.tableList('extractLst',"{:Url('exract.extract/get_extract_lst')}", function () {
+    layList.tableList('pinkList',"{:Url('pink.pink/get_pink_lst')}",function () {
         return [
+            // {type:'checkbox'},
             {field: 'id', title: '序号', width:'6%',event:'id'},
-            {field: 'merchant_name', title: '商户名称', width:'17%', },
-            {field: 'account', title: '账号', width:'10%'},
-            {field: 'ordernob', title: '订单号',align:'center',width:'20%'},
-            {field: 'extract_price', title: '金额',align:'center',width:'8%'},
-            {field: 'add_time', title: '创建时间',align:'center',width:'12%'},
-            {field: 'detail', title: '提现详情',align:'center',width:'12%', toolbar:'#detailData'},
-            {fixed: 'right', title: '操作',align:'center',width:'15%', toolbar:'#handle'},
+            {field: 'create_time', title: '创建时间', width:'10%', },
+            {field: 'pname', title: '活动名称', width:'10%',},
+            {field: 'shop_name', title: '店名',align:'center',width:'10%'},
+            {field: 'account', title: '账号',align:'center',width:'10%'},
+            {field: 'ping_detail', title: '拼团记录',align:'center',width:'12%', toolbar:'#detailData'},
+            {field: 'status', title: '单号',align:'center',width:'8%'},
+            {field: 'poster', title: '海报', width: '10%', align: 'center', toolbar: '#posterData'},
+            {fixed: 'right', title: '操作', width: '10%', align: 'center', toolbar: '#handle'}
+
         ];
     });
-    layList.date('add_time');
-    //监听并执行 uid 的排序
+    //layList.date('add_time');
+    //监听并执行 id 的排序
     layList.sort(function (obj) {
         var layEvent = obj.field;
         var type = obj.type;
         switch (layEvent){
-            case 'uid':
-                layList.reload({order: layList.order(type,'u.uid')},true,null,obj);
+            case 'id':
+                layList.reload({order: layList.order(type,'u.id')},true,null,obj);
                 break;
      /*       case 'now_money':
                 layList.reload({order: layList.order(type,'u.now_money')},true,null,obj);
@@ -167,18 +216,31 @@
                 break;*/
         }
     });
-    //监听并执行 uid 的排序
+    //监听并执行 id 的排序
     layList.tool(function (event,data) {
         var layEvent = event;
+        console.log(data);
         switch (layEvent){
             case 'edit':
-                $eb.createModalFrame('编辑',layList.Url({a:'edit',p:{uid:data.uid}}));
+                $eb.createModalFrame('编辑',layList.Url({c:'merchant.merchant',a:'edit',p:{id:data.id}}));
                 break;
             case 'see':
-                $eb.createModalFrame(data.nickname+'停用',layList.Url({a:'see',p:{uid:data.uid}}));
+                $eb.createModalFrame('停用',layList.Url({a:'see',p:{id:data.id}}));
                 break;
             case 'del':
-                $eb.createModalFrame(data.nickname+'删除',layList.Url({a:'del',p:{uid:data.uid}}));
+                $eb.createModalFrame('删除',layList.Url({a:'del',p:{id:data.id}}));
+                break;
+            case 'enable':
+                layList.basePost(layList.Url({c:'merchant.merchant',a:'changeStatus'}),{id:data.id,status:1},function (res) {
+                    layList.msg(res.msg);
+                    layList.reload();
+                });
+                break;
+            case 'disable':
+                layList.basePost(layList.Url({c:'merchant.merchant',a:'changeStatus'}),{id:data.id,status:1},function (res) {
+                    layList.msg(res.msg);
+                    layList.reload();
+                });
                 break;
         }
     });
@@ -204,6 +266,10 @@
     });
 
     var action={
+        set_add: function(){
+            $eb.createModalFrame('新增商户','{:Url("admin/merchant.merchant/add")}');
+        },
+
         set_status_f:function () {
             var ids=layList.getCheckData().getIds('uid');
             if(ids.length){
@@ -215,52 +281,7 @@
                 layList.msg('请选择要封禁的会员');
             }
         },
-        set_status_j:function () {
-            var ids=layList.getCheckData().getIds('uid');
-            if(ids.length){
-                layList.basePost(layList.Url({a:'set_status',p:{is_echo:1,status:1}}),{uids:ids},function (res) {
-                    layList.msg(res.msg);
-                    layList.reload();
-                });
-            }else{
-                layList.msg('请选择要解封的会员');
-            }
-        },
-        set_grant:function () {
-            var ids=layList.getCheckData().getIds('uid');
-            if(ids.length){
-                var str = ids.join(',');
-                $eb.createModalFrame('发送优惠券',layList.Url({c:'ump.store_coupon',a:'grant',p:{id:str}}),{'w':800});
-            }else{
-                layList.msg('请选择要发送优惠券的会员');
-            }
-        },
-        set_template:function () {
-            var ids=layList.getCheckData().getIds('uid');
-            if(ids.length){
-                var str = ids.join(',');
-            }else{
-                layList.msg('请选择要发送模板消息的会员');
-            }
-        },
-        set_info:function () {
-            var ids=layList.getCheckData().getIds('uid');
-            if(ids.length){
-                var str = ids.join(',');
-                $eb.createModalFrame('发送站内信息',layList.Url({c:'user.user_notice',a:'notice',p:{id:str}}),{'w':1200});
-            }else{
-                layList.msg('请选择要发送站内信息的会员');
-            }
-        },
-        set_custom:function () {
-            var ids=layList.getCheckData().getIds('uid');
-            if(ids.length){
-                var str = ids.join(',');
-                $eb.createModalFrame('发送客服图文消息',layList.Url({c:'wechat.wechat_news_category',a:'send_news',p:{id:str}}),{'w':1200});
-            }else{
-                layList.msg('请选择要发送客服图文消息的会员');
-            }
-        },
+        
         refresh:function () {
             layList.reload();
         }

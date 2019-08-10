@@ -6,9 +6,10 @@
  * Time: 14:30
  */
 
-namespace app\admin\controller\extract;
+namespace app\admin\controller\exract;
 
 use app\admin\controller\AuthController;
+use service\JsonService as Json;
 use app\admin\model\order\StoreOrder;
 use app\admin\model\user\User;
 use app\admin\model\wechat\WechatUser as UserModel;
@@ -39,36 +40,41 @@ class Extract extends AuthController
      */
     public function index()
     {
-        $where = Util::getMore([
-            ['data',''],
-        ],$this->request);
-        $this->assign([
-            'where'=>$where,
-        ]);
+        
+        return $this->fetch();
 
-        $count= DB::name('extract')->where($where)->field('*')->count();
+    }
+
+    /**
+     * @return json
+     */
+    public function get_extract_lst(Request $request){
+        $data = $request->param();
 
         //获取每页显示的条数
-        $limit= Request::instance()->param('limit');
+        $limit= $data['limit'];
         //获取当前页数
-        $page= Request::instance()->param('page');
+        $page= $data['page'];
+
+        $where = array(
+            'status' => 0,
+        );
+        $count= DB::name('extract')->where($where)->field('*')->count();
+
         //计算出从那条开始查询
         $tol=($page-1)*$limit;
 
        $list = DB::name('extract')->where($where)->field('*')->limit($tol, $limit)->select();
         foreach ($list as $k=>$v){
             $list[$k]['merchant_name']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('merchant_name');
+            $list[$k]['account']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('account');
         }
-        $data = array(
-            'code'  => 0,
-            'msg'   => '',
-            'count' => $count,
-            'data'  =>$list,
-        );
-//var_dump($data);die;
-        return $data;
 
+        return Json::successlayui(array('count'=>$count, 'data' => $list));
     }
+
+
+
 
     /**
      * 详情

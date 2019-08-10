@@ -9,6 +9,8 @@
 namespace app\admin\controller\pink;
 
 use app\admin\controller\AuthController;
+use app\admin\model\pink\Pink as PinkModel;
+use service\JsonService as Json;
 use app\admin\model\user\User;
 use app\admin\library\FormBuilder;
 use app\wap\model\user\UserBill;
@@ -36,45 +38,27 @@ class Pink extends AuthController
      */
     public function index()
     {
-        $where = Util::getMore([
-            ['pname',''],
-            ['data',''],
-        ],$this->request);
-        $this->assign([
-            'where'=>$where,
-        ]);
 
-        $count= DB::name('pink')->where($where)->field('*')->count();
-
-        //获取每页显示的条数
-        $limit= Request::instance()->param('limit');
-        //获取当前页数
-        $page= Request::instance()->param('page');
-        //计算出从那条开始查询
-        $tol=($page-1)*$limit;
-
-       $list = DB::name('pink')->where($where)->field('*')->limit($tol, $limit)->select();
-
-       foreach ($list as $k=>$v){
-           //拼团开始后不允许编辑
-             if(time()>= $v['add_time']&&$v['status']==1){
-                 $list[$k]['edit']=false;
-             }
-       }
-
-        $data = array(
-            'code'  => 0,
-            'msg'   => '',
-            'count' => $count,
-            'data'  =>$list,
-        );
-//var_dump($data);die;
-        return $data;
-
-
-
+        return $this->fetch();
 
     }
+
+
+
+
+    public function get_pink_lst()
+    {
+        $where=Util::getMore([
+            ['page',1],
+            ['limit',20],
+            ['pname',''],
+        ]);
+        return Json::successlayui(PinkModel::getPinkList($where));
+
+    }
+
+
+
 
     /*
     * 编辑
@@ -91,6 +75,9 @@ class Pink extends AuthController
         $this->assign('info',$res);
         return $this->fetch();
     }
+
+
+    
 
     /**
      * 保存
