@@ -92,14 +92,12 @@ class Merchant extends AuthController
      */
     public function edit()
     {
-        $post = $this->request->post();
-
-        if(!isset($post['id'])){
-            JsonService::fail('缺少参数');
-        }
-        $res =  Db::name('merchant')->where('id',$post['id'])->find();
+        $id = $this->request->param('id');
+ 
+        $res =  Db::name('merchant')->where('id',$id)->find();
 
         $this->assign('info',$res);
+
         return $this->fetch();
     }
 
@@ -116,12 +114,12 @@ class Merchant extends AuthController
                     'merchant_name'   => $post['merchant_name'],
                     'province'    => $post['province'],
                     'city'=>$post['city'],
-                    'district'   => $post['district'],
+                    // 'district'   => $post['district'],
                     'address'   => $post['address'],
                     'account'   => $post['account'],
                     'pwd'   => $post['pwd'],
-                    'phone'   => $post['phone'],
-                    'status'   => $post['status']
+                    // 'phone'   => $post['phone'],
+                    // 'status'   => $post['status']
                 );
                 $res = Db::name('merchant')->where('id',$post['id'])->update($data);
 
@@ -130,12 +128,13 @@ class Merchant extends AuthController
                     'merchant_name'   => $post['merchant_name'],
                     'province'    => $post['province'],
                     'city'=>$post['city'],
-                    'district'   => $post['district'],
+                    // 'district'   => $post['district'],
                     'address'   => $post['address'],
                     'account'   => $post['account'],
                     'pwd'   => $post['pwd'],
-                    'phone'   => $post['phone'],
-                    'status'   => $post['status'],
+                    'uid'   => '',
+                    // 'phone'   => $post['phone'],
+                    // 'status'   => $post['status'],
                     'add_time'   => time()
                 );
 
@@ -172,6 +171,27 @@ class Merchant extends AuthController
 
         }else{
             return JsonService::fail('删除失败');
+        }
+    }
+
+
+    /**
+     * 修改状态 190810
+     * @return Request
+     */
+    public function changeStatus()
+    {
+        $post = $this->request->post();
+
+        if(!isset($post['id'])){
+            JsonService::fail('缺少参数');
+        }
+        $res = Db::name('merchant')->update($post);
+
+        if($res){
+            return JsonService::successful('操作成功');
+        }else{
+            return JsonService::fail('操作失败');
         }
     }
 }

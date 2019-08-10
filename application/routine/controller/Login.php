@@ -16,49 +16,147 @@ class Login extends Controller{
 
 
 
-    /**
+//     /**
+//      * 获取用户信息
+//      * mr.hu ok
+//      * @param Request $request
+//      * @return \think\response\Json
+//      */
+
+//     public function index(Request $request){
+//         $data = UtilService::postMore([['info',[]]],$request);//获取前台传的code
+// //        var_dump($data);
+// //        var_dump(MiniProgramService::encryptor($data->code));
+//         $data = $data['info'];
+//         unset($data['info']);
+// //        var_dump(MiniProgramService::getUserInfo($data['code']));
+
+//         $res = $this->setCode($data['code']);
+//         if(!isset($res['openid'])) return JsonService::fail('openid获取失败');
+//         if(isset($res['unionid'])) $data['unionid'] = $res['unionid'];
+//         else $data['unionid'] = '';
+//         $data['routine_openid'] = $res['openid'];
+//         $data['session_key'] = $res['session_key'];
+//         $dataOauthInfo = RoutineUser::routineOauth($data);
+//         $data['uid'] = $dataOauthInfo['uid'];
+//         $data['page'] = $dataOauthInfo['page'];
+//         $data['status'] = RoutineUser::isUserStatus($data['uid']);
+//         return JsonService::successful($data);
+//     }
+
+
+//     /**
+//      * 小程序登录（用户）
+//      * 根据前台传code  获取 openid 和  session_key //会话密匙
+//      * mr.hu ok
+//      * @param string $code
+//      * @return array|mixed
+//      */
+//     public function setCode($code = ''){
+//         if($code == '') return [];
+//         $routineAppId = SystemConfig::getValue('routine_appId');//小程序appID
+//         $routineAppSecret = SystemConfig::getValue('routine_appsecret');//小程序AppSecret
+//         $url = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$routineAppId.'&secret='.$routineAppSecret.'&js_code='.$code.'&grant_type=authorization_code';
+//         return json_decode(RoutineServer::curlGet($url),true);
+//     }
+     /**
      * 获取用户信息
-     * mr.hu ok
      * @param Request $request
      * @return \think\response\Json
+     * info[
+     *    pdata.iv = encodeURI(res.iv);
+          pdata.encryptedData = res.encryptedData;
+          pdata.session_key = wx.getStorageSync('session_key');//获取上一步获取的session_key
+     * ]
      */
-
     public function index(Request $request){
         $data = UtilService::postMore([['info',[]]],$request);//获取前台传的code
-//        var_dump($data);
-//        var_dump(MiniProgramService::encryptor($data->code));
         $data = $data['info'];
         unset($data['info']);
-//        var_dump(MiniProgramService::getUserInfo($data['code']));
+        //解密获取用户信息
+        $iv = urlencode($data['iv']);
+        $data['iv'] = urldecode($iv);
+        try{
+            $userInfo = $this->decryptCode($data['session_key'], $data['iv'], $data['encryptedData']);
+            if(!isset($userInfo['openId'])) return JsonService::fail('openid获取失败');
+            if(!isset($userInfo['unionId']))  $userInfo['unionid'] = '';
+            $userInfo['session_key'] = $data['session_key'];
+            $userInfo['spid'] = $data['spid'];//推广人ID
+            $userInfo['spreadid'] = (int)$data['spreadid'];//推广人ID 2.5.36
+            $dataOauthInfo = RoutineUser::routineOauthnew($userInfo);
+            $userInfo['uid'] = $dataOauthInfo['uid'];
+            $userInfo['page'] = $dataOauthInfo['page'];
+            $userInfo['status'] = RoutineUser::isUserStatus($userInfo['uid']);
+            $userInfo['uidShare'] = RoutineUser::isUserShare($userInfo['uid']);//我的推广二维码ID
+            return JsonService::successful($userInfo);
+        }catch (\Exception $e){
+            return JsonService::fail('error',$e->getMessage());
+        }
 
-        $res = $this->setCode($data['code']);
-        if(!isset($res['openid'])) return JsonService::fail('openid获取失败');
-        if(isset($res['unionid'])) $data['unionid'] = $res['unionid'];
-        else $data['unionid'] = '';
-        $data['routine_openid'] = $res['openid'];
-        $data['session_key'] = $res['session_key'];
-        $dataOauthInfo = RoutineUser::routineOauth($data);
-        $data['uid'] = $dataOauthInfo['uid'];
-        $data['page'] = $dataOauthInfo['page'];
-        $data['status'] = RoutineUser::isUserStatus($data['uid']);
-        return JsonService::successful($data);
     }
 
 
     /**
-     * 小程序登录（用户）
+     * 小程序登录
+     *
      * 根据前台传code  获取 openid 和  session_key //会话密匙
-     * mr.hu ok
      * @param string $code
      * @return array|mixed
      */
-    public function setCode($code = ''){
+    public function setCode(Request $request){
+        $data = UtilService::postMore([['info', []]], $request);//获取前台传的code
+//        var_dump($data);die;
+        $code = '';
+        if(isset($data['info']['code']))
+            $code = $data['info']['code'];
+        else
+            JsonService::fail('未获取到code');
         if($code == '') return [];
-        $routineAppId = SystemConfig::getValue('routine_appId');//小程序appID
-        $routineAppSecret = SystemConfig::getValue('routine_appsecret');//小程序AppSecret
-        $url = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$routineAppId.'&secret='.$routineAppSecret.'&js_code='.$code.'&grant_type=authorization_code';
-        return json_decode(RoutineServer::curlGet($url),true);
+        $info = MiniProgramService::getUserInfo($code);
+        return $info;
     }
+
+
+    /**
+     * 获取用户手机号码
+     * @param Request $request
+     * @return \think\response\Json
+     */
+    public function bind_mobile(Request $request){
+        $data = UtilService::postMore([['info',[]]],$request);
+        $data = $data['info'];
+        unset($data['info']);
+        //解密获取用户信息
+        $data['iv']  = urldecode(urlencode($data['iv']));
+        try{
+            $userInfo = MiniProgramService::encryptor($data['session_key'], $data['iv'], $data['encryptedData']);
+            if(!empty($userInfo['purePhoneNumber'])){
+                if(User::edit(['phone'=>$userInfo['purePhoneNumber']],$this->userInfo['uid']))
+                    return JsonService::success('绑定成功');
+                else
+                    return JsonService::fail('绑定失败');
+            }else
+                return JsonService::fail('获取手机号失败');
+
+        }catch (\Exception $e){
+            return JsonService::fail('error',$e->getMessage());
+        }
+
+    }
+
+    /**
+     * 解密数据
+     * @param string $code
+     * @return array|mixed
+     */
+    public function decryptCode($session = '', $iv = '', $encryptData = '')
+    {
+        if (!$session) return JsonService::fail('session参数错误');
+        if (!$iv) return JsonService::fail('iv参数错误');
+        if (!$encryptData) return JsonService::fail('encryptData参数错误');
+        return MiniProgramService::encryptor($session, $iv, $encryptData);
+    }
+
 
     /**
      * 商户登录

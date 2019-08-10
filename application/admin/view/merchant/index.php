@@ -45,7 +45,7 @@
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>商户搜索</h5>
+                <h5>商户列表</h5>
                 <div class="ibox-tools">
                     <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
@@ -55,7 +55,7 @@
             <div class="ibox-content" style="display: block;">
                 <div class="alert alert-success alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-
+                    搜索
                 </div>
                 <form class="layui-form">
                     <div class="layui-form-item">
@@ -95,6 +95,7 @@
                         <!--                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_template"><i class="fa fa-check-circle-o"></i>发送模板消息</button>-->
                         <!--<button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_info"><i class="fa fa-check-circle-o"></i>发送站内消息</button>-->
                         <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_add"><i class="fa fa-check-circle-o"></i>新增</button>
+                        <!-- <button class="layui-btn layui-btn-sm" onclick="$eb.createModalFrame(this.innerText,'{:Url('create')}',{h:700,w:1100})">添加产品</button> -->
                         <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="refresh"><i class="layui-icon layui-icon-refresh" ></i>刷新</button>
                     </div>
                     <table class="layui-hide" id="userList" lay-filter="userList">
@@ -106,12 +107,29 @@
                     <script type="text/html" id="checkboxstatus">
                         <input type='checkbox' name='status' lay-skin='switch' value="{{d.uid}}" lay-filter='status' lay-text='正常|禁止'  {{ d.status == 1 ? 'checked' : '' }}>
                     </script>
+                    
+                    <script type="text/html" id="addressData">
+                        {{d.province}}&nbsp;&nbsp;{{d.city}}&nbsp;&nbsp;{{d.address}}
+                    </script>
+
+                    <script type="text/html" id="statusData">
+                        {{#  if(d.status == 0){  }}
+                        已启用
+                        {{#  }else{   }}
+                        已禁用
+                        {{#  }  }}
+                    </script>
+
+
                     <script type="text/html" id="barDemo">
                         <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</button>
 
-                        <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>禁用</button>
-                        <button type="button" class="layui-btn layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</button>
-
+                        <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button> -->
+                        {{#  if(d.status == 0){  }}
+                        <button type="button" class="layui-btn layui-btn-xs" lay-event="disable" style="background-color:#FF5722"><i class="layui-icon layui-icon-face-cry"></i>禁用</button>
+                        {{#  }else{   }}
+                        <button type="button" class="layui-btn layui-btn-xs" lay-event="enable"><i class="layui-icon layui-icon-ok"></i>启用</button>
+                        {{#  }  }}
                     </script>
                 </div>
             </div>
@@ -166,9 +184,10 @@
             {field: 'merchant_name', width:'20%', title: '商户名称'},
             {field: 'account',  width:'10%',title: '账号',},
             {field: 'pwd', title: '密码',align:'center',width:'10%'},
-            {field: 'address', title: '地址',align:'center',width:'22%'},
+            {field: 'address', title: '地址',align:'center',width:'22%', toolbar: '#addressData'},
             {field: 'add_time', title: '入驻时间',align:'center',width:'12%'},
-            {fixed: 'right', title: '操作', width: '20%', align: 'center', toolbar: '#barDemo'}
+            {field: 'status', title: '状态',align:'center',width:'8%', toolbar:'#statusData'},
+            {fixed: 'right', title: '操作', width: '10%', align: 'center', toolbar: '#barDemo'}
 
         ];
     });
@@ -192,15 +211,28 @@
     //监听并执行 id 的排序
     layList.tool(function (event,data) {
         var layEvent = event;
+        console.log(data);
         switch (layEvent){
             case 'edit':
-                $eb.createModalFrame('编辑',layList.Url({a:'edit',p:{id:data.id}}));
+                $eb.createModalFrame('编辑',layList.Url({c:'merchant.merchant',a:'edit',p:{id:data.id}}));
                 break;
             case 'see':
                 $eb.createModalFrame('停用',layList.Url({a:'see',p:{id:data.id}}));
                 break;
             case 'del':
                 $eb.createModalFrame('删除',layList.Url({a:'del',p:{id:data.id}}));
+                break;
+            case 'enable':
+                layList.basePost(layList.Url({c:'merchant.merchant',a:'changeStatus'}),{id:data.id,status:1},function (res) {
+                    layList.msg(res.msg);
+                    layList.reload();
+                });
+                break;
+            case 'disable':
+                layList.basePost(layList.Url({c:'merchant.merchant',a:'changeStatus'}),{id:data.id,status:1},function (res) {
+                    layList.msg(res.msg);
+                    layList.reload();
+                });
                 break;
         }
     });
@@ -226,6 +258,9 @@
     });
 
     var action={
+        set_add: function(){
+            $eb.createModalFrame('新增商户','{:Url("admin/merchant.merchant/add")}')
+        },
         set_status_f:function () {
             var ids=layList.getCheckData().getIds('uid');
             if(ids.length){
