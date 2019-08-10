@@ -52,7 +52,7 @@
                     </a>
                 </div>
             </div>
-            <div class="ibox-content" style="display: block;">
+            <div class="ibox-content" style="display: none;">
                 <div class="alert alert-success alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
                     搜索
@@ -94,7 +94,7 @@
                         <!--                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_custom"><i class="fa fa-check-circle-o"></i>发送客服图文消息</button>-->
                         <!--                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_template"><i class="fa fa-check-circle-o"></i>发送模板消息</button>-->
                         <!--<button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_info"><i class="fa fa-check-circle-o"></i>发送站内消息</button>-->
-                        <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_add"><i class="fa fa-check-circle-o"></i>新增</button>
+                        <!-- <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="set_add"><i class="fa fa-check-circle-o"></i>新增</button> -->
                         <!-- <button class="layui-btn layui-btn-sm" onclick="$eb.createModalFrame(this.innerText,'{:Url('create')}',{h:700,w:1100})">添加产品</button> -->
                         <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="refresh"><i class="layui-icon layui-icon-refresh" ></i>刷新</button>
                     </div>
@@ -195,7 +195,7 @@
             {field: 'ping_detail', title: '拼团记录',align:'center',width:'12%', toolbar:'#detailData'},
             {field: 'status', title: '单号',align:'center',width:'8%'},
             {field: 'poster', title: '海报', width: '10%', align: 'center', toolbar: '#posterData'},
-            {fixed: 'right', title: '操作', width: '10%', align: 'center', toolbar: '#handle'}
+            // {fixed: 'right', title: '操作', width: '10%', align: 'center', toolbar: '#handle'}
 
         ];
     });

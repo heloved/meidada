@@ -147,7 +147,7 @@
             {field: 'extract_price', title: '金额',align:'center',width:'8%'},
             {field: 'add_time', title: '创建时间',align:'center',width:'12%'},
             {field: 'detail', title: '提现详情',align:'center',width:'12%', toolbar:'#detailData'},
-            {fixed: 'right', title: '操作',align:'center',width:'15%', toolbar:'#handle'},
+            // {fixed: 'right', title: '操作',align:'center',width:'15%', toolbar:'#handle'},
         ];
     });
     layList.date('add_time');
