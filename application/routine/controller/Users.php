@@ -101,10 +101,12 @@ class Users extends AuthController{
 
      //   $combinationOne['userCollect'] = StoreProductRelation::isProductRelation($id,$this->userInfo['uid'],'collect','pink_product');
 
-        $pink = PinkOrder::getPinkAll($post['id']);//拼团列表
+        $pink = PinkOrder::getPinkAll($post['id'],2);//拼团列表
         $pindAll = array();
         foreach ($pink as $k=>$v){
-            $pink[$k]['count'] = PinkOrder::getPinkPeople($v['id'],$v['people']);
+          $count = PinkOrder::getPinkPeople($v['id'],$v['people']);
+            $pink[$k]['pink']= $count==$v['people']?'1':0; //1拼团成功
+            $pink[$k]['count']=$count;
             $pink[$k]['h'] = date('H',$v['stop_time']);
             $pink[$k]['i'] = date('i',$v['stop_time']);
             $pink[$k]['s'] = date('s',$v['stop_time']);
@@ -116,6 +118,150 @@ class Users extends AuthController{
         $data['pindAll'] = $pindAll;
         $data['storeInfo'] =$info;
         return JsonService::successful($data);
+    }
+
+    /**
+     * 拼团列表（参团）
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function combination_list(){
+        $post = $this->request->post();
+        if(!$post['id']) return JsonService::fail('拼团不存在或已下架');
+
+        $info = Db::name('pink')->where('id',$post['id'])->find();
+        if(!$info) return JsonService::fail('拼团不存在或已下架');
+
+        //   $combinationOne['userCollect'] = StoreProductRelation::isProductRelation($id,$this->userInfo['uid'],'collect','pink_product');
+
+        $pink = PinkOrder::getPinkAll($post['id']);//拼团列表
+
+       // $user = WechatUser::get($this->userInfo['uid'])->toArray();//用户信息
+        $data['pink'] = $pink;
+       // $data['user'] = $user;
+        return JsonService::successful($data);
+    }
+
+    /**
+     * 拼团 加入到购物车
+     * @param string $productId
+     * @param int $cartNum
+     * @param int $combinationId
+     * @return \think\response\Json
+     */
+    public function now_buy($productId = '',$cartNum = 1,$combinationId = 0){
+        if(!$combinationId || !is_numeric($productId)) return JsonService::fail('参数错误');
+
+        if(!Pink::getCombinationStock($combinationId,$cartNum))
+            return self::setErrorInfo('该产品库存不足'.$cartNum);
+        if(!Pink::isValidCombination($combinationId))
+            return self::setErrorInfo('该产品已下架或删除');
+        $where = ['type'=>'product','uid'=>$this->userInfo['uid'],'product_id'=>$productId,'product_attr_unique'=>'','is_new'=>1,'is_pay'=>0,'is_del'=>0,'combination_id'=>$combinationId];
+
+        $cart =  Db::name('store_cart')->where($where)->find();
+        if(!$cart){
+            $data = ['type'=>'product',
+                'uid'=>$this->userInfo['uid'],
+                'product_id'=>$productId,
+                'product_attr_unique'=>'',
+                'is_new'=>1,
+                'is_pay'=>0,
+                'is_del'=>0,
+                'add_time'=>time(),
+                'combination_id'=>$combinationId
+            ];
+
+            $id = Db::name('store_cart')->insertGetId($data);
+            if(!$id) return JsonService::fail(StoreCart::getErrorInfo());
+            else  return JsonService::successful('ok',['cartId'=>$id]);
+        }
+
+
+
+    }
+    /**
+     * 订单页面
+     * @param Request $request
+     * @return \think\response\Json
+     */
+    public function confirm_order(Request $request){
+
+        $data = UtilService::postMore(['cartId'],$request);
+        $cartId = $data['cartId'];
+        if(!is_string($cartId) || !$cartId ) return JsonService::fail('请提交购买的商品');
+        $cartInfo=  Db::name('store_cart')->where('id',$cartId)->find();
+       $pink = Db::name('pink')->where('id',$cartInfo['product_id'])->find();
+
+            $info = StoreCart::where('id',$cartId)->find();
+            if((int)$info['combination_id']>0) $combination_id=$info['combination_id'];
+            else $combination_id=0;
+
+        $data['combination_id'] = $combination_id;
+        $data['cartInfo'] = $cartInfo;
+        $data['pink'] = $pink;
+    //    $data['priceGroup'] = $priceGroup;
+     //   $data['orderKey'] = StoreOrder::cacheOrderInfo($this->userInfo['uid'],$cartInfo,$priceGroup,$other);
+     //   $data['offlinePostage'] = $other['offlinePostage'];
+        $data['userInfo'] = User::getUserInfo($this->userInfo['uid']);
+       // $data['integralRatio'] = $other['integralRatio'];
+        return JsonService::successful($data);
+    }
+    /**
+     * 创建订单
+     * @param string $key
+     * @return \think\response\Json
+     */
+    public function create_order($key = '')
+    {
+        if(!$key) return JsonService::fail('参数错误!');
+        if(StoreOrder::be(['order_id|unique'=>$key,'uid'=>$this->userInfo['uid'],'is_del'=>0])){
+
+            return JsonService::status('extend_order','订单已生成',['orderId'=>$key,'key'=>$key]);
+        }
+
+        list($addressId,$couponId,$payType,$useIntegral,$mark,$combinationId,$pinkId,$seckill_id,$formId,$bargainId) = UtilService::postMore([
+            'addressId','couponId','payType','useIntegral','mark',['combinationId',0],['pinkId',0],['seckill_id',0],['formId',''],['bargainId','']
+        ],Request::instance(),true);
+        $payType = strtolower($payType);
+
+        if($pinkId) if(PinkOrder::getIsPinkUid($pinkId,$this->userInfo['uid'])){
+
+         return JsonService::status('ORDER_EXIST','订单生成失败，你已经在该团内不能再参加了',['orderId'=>StoreOrder::getStoreIdPink($pinkId,$this->userInfo['uid'])]);
+        }
+        if($pinkId) if(StoreOrder::getIsOrderPink($pinkId,$this->userInfo['uid'])){
+            return JsonService::status('ORDER_EXIST','订单生成失败，你已经参加该团了，请先支付订单',['orderId'=>StoreOrder::getStoreIdPink($pinkId,$this->userInfo['uid'])]);
+
+        }
+       //生成订单
+        $order = StoreOrder::cacheKeyCreateOrder($this->userInfo['uid'],$key,$addressId,$payType,$useIntegral,$couponId,$mark,$combinationId,$pinkId,$seckill_id,$bargainId);
+        $orderId = $order['order_id'];
+        $info = compact('orderId','key');
+        if($orderId){
+            if($payType == 'weixin'){
+                $orderInfo = StoreOrder::where('order_id',$orderId)->find();
+                if(!$orderInfo || !isset($orderInfo['paid'])) exception('支付订单不存在!');
+                if($orderInfo['paid']) exception('支付已支付!');
+                //如果支付金额为0
+                if(bcsub((float)$orderInfo['pay_price'],0,2) <= 0){
+                    //创建订单jspay支付
+                    if(StoreOrder::jsPayPrice($orderId,$this->userInfo['uid'],$formId))
+                        return JsonService::status('success','微信支付成功',$info);
+                    else
+                        return JsonService::status('pay_error',StoreOrder::getErrorInfo());
+                }else{
+                    try{
+                        $jsConfig = StoreOrder::jsPay($orderId);//创建订单jspay
+                    }catch (\Exception $e){
+                        return JsonService::status('pay_error',$e->getMessage(),$info);
+                    }
+                    $info['jsConfig'] = $jsConfig;
+                    return JsonService::status('wechat_pay','订单创建成功',$info);
+                }
+            }
+        }else{
+            return JsonService::fail(StoreOrder::getErrorInfo('订单生成失败!'));
+        }
     }
 
 }

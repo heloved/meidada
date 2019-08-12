@@ -138,7 +138,7 @@
         })
     });
     layList.form.render();
-    layList.tableList('extractLst',"{:Url('extract.extract/get_extract_lst')}", function () {
+    layList.tableList('extractLst',"{:Url('extract.extract/get_unprocessed_list')}", function () {
         return [
             {field: 'id', title: '序号', width:'6%',event:'id'},
             {field: 'merchant_name', title: '商户名称', width:'17%', },

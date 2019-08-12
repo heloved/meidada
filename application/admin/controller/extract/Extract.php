@@ -6,7 +6,7 @@
  * Time: 14:30
  */
 
-namespace app\admin\controller\exract;
+namespace app\admin\controller\extract;
 
 use app\admin\controller\AuthController;
 use service\JsonService as Json;
@@ -56,9 +56,11 @@ class Extract extends AuthController
         //获取当前页数
         $page= $data['page'];
 
-        $where = array(
-            'status' => 0,
-        );
+        $where =[];
+        if(isset($data['status'])&& !empty($data['status'])){
+            $where['status']=$data['status'];
+        }
+
         $count= DB::name('extract')->where($where)->field('*')->count();
 
         //计算出从那条开始查询
@@ -73,7 +75,87 @@ class Extract extends AuthController
         return Json::successlayui(array('count'=>$count, 'data' => $list));
     }
 
+    /**
+     * 商户提现 待处理
+     * @return array
+     * @throws \think\Exception
+     * @throws \think\exception\DbException
+     * @throws db\exception\DataNotFoundException
+     * @throws db\exception\ModelNotFoundException
+     */
+    public function unprocessed()
+    {
 
+        return $this->fetch();
+
+    }
+    public function get_unprocessed_list(Request $request)
+    {
+        $data = $request->param();
+
+        //获取每页显示的条数
+        $limit= $data['limit'];
+        //获取当前页数
+        $page= $data['page'];
+
+        $where['status']=0;
+
+        $count= DB::name('extract')->where($where)->field('*')->count();
+
+        //计算出从那条开始查询
+        $tol=($page-1)*$limit;
+
+        $list = DB::name('extract')->where($where)->field('*')->limit($tol, $limit)->select();
+        foreach ($list as $k=>$v){
+            $list[$k]['merchant_name']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('merchant_name');
+            $list[$k]['account']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('account');
+        }
+
+        return Json::successlayui(array('count'=>$count, 'data' => $list));
+
+
+    }
+    /**
+     * 商户提现 处理
+     * @return array
+     * @throws \think\Exception
+     * @throws \think\exception\DbException
+     * @throws db\exception\DataNotFoundException
+     * @throws db\exception\ModelNotFoundException
+     */
+    public function processed()
+    {
+
+        return $this->fetch();
+
+    }
+
+    public function get_processed_list(Request $request)
+    {
+        $data = $request->param();
+
+        //获取每页显示的条数
+        $limit= $data['limit'];
+        //获取当前页数
+        $page= $data['page'];
+
+        $where['status']=1;
+
+        $count= DB::name('extract')->where($where)->field('*')->count();
+
+        //计算出从那条开始查询
+        $tol=($page-1)*$limit;
+
+        $list = DB::name('extract')->where($where)->field('*')->limit($tol, $limit)->select();
+        foreach ($list as $k=>$v){
+            $list[$k]['merchant_name']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('merchant_name');
+            $list[$k]['account']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('account');
+        }
+
+        return Json::successlayui(array('count'=>$count, 'data' => $list));
+
+
+    }
 
 
     /**

@@ -2,3 +2,4 @@
 /.idea
 /runtime
 .htaccsess
+/application\database.php
