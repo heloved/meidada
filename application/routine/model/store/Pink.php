@@ -141,7 +141,7 @@ class Pink extends ModelBasic
      * @return int|mixed
      */
     public static function getCombinationStock($id,$cart_num){
-        $stock = self::where('id',$id)->value('stock');
+        $stock = self::where('id',$id)->value('num');
         return $stock > $cart_num ? $stock : 0;
     }
     /**
@@ -152,8 +152,7 @@ class Pink extends ModelBasic
     public static function isValidCombination($id){
         $model = new self();
         $model = $model->where('id',$id);
-        $model = $model->where('is_del',0);
-        $model = $model->where('is_show',1);
+        $model = $model->where('status',1);
         return $model->count();
     }
 

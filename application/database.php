@@ -13,6 +13,7 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
+<<<<<<< HEAD
     // 'hostname'        => 'rm-wz98o47u87bm0qmv3no.mysql.rds.aliyuncs.com',
     'hostname'        => 'localhost',
     // 数据库名
@@ -24,6 +25,18 @@ return [
     // 'password'        => 'Mfyh123456#',
     'password'        => 'root',
 
+=======
+ //   'hostname'        => 'rm-wz98o47u87bm0qmv3no.mysql.rds.aliyuncs.com',
+    'hostname'        =>'127.0.0.1',
+    // 数据库名
+    'database'        => 'minipro',
+    // 用户名
+  //  'username'        => 'wtest',
+    'username'        => 'root',
+    // 密码
+  //  'password'        => 'Mfyh123456#',
+    'password'        => 'root',
+>>>>>>> fe9dea434424ff70624e95f66a495db2449b18c9
     // 端口
     'hostport'        => '3306',
     // 连接dsn

@@ -78,7 +78,7 @@ class PinkOrder extends ModelBasic
      * mr.hu
      * @return mixed
      */
-    public static function getPinkAll($pid){
+    public static function getPinkAll($pid,$limit=0){
         $model = new self();
         $model = $model->alias('p');
         $model = $model->field('p.*,u.nickname,u.avatar');
@@ -88,6 +88,10 @@ class PinkOrder extends ModelBasic
      //   $model = $model->where('is_refund',0);
         $model = $model->order('add_time desc');
         $model = $model->join('__USER__ u','u.uid = p.uid');
+        if($limit){
+            $model = $model->limit(0,$limit);
+        }
+
         $list = $model->select();
         if($list) return $list->toArray();
         else return [];

@@ -40,8 +40,8 @@ class Logins extends Controller{
             $dataOauthInfo = RoutineUser::routineOauthnew($userInfo);
             $userInfo['uid'] = $dataOauthInfo['uid'];
             $userInfo['page'] = $dataOauthInfo['page'];
-            $userInfo['status'] = RoutineUser::isUserStatus($userInfo['uid']);
-            $userInfo['uidShare'] = RoutineUser::isUserShare($userInfo['uid']);//我的推广二维码ID
+           // $userInfo['status'] = RoutineUser::isUserStatus($userInfo['uid']);
+         //   $userInfo['uidShare'] = RoutineUser::isUserShare($userInfo['uid']);//我的推广二维码ID
             return JsonService::successful($userInfo);
         }catch (\Exception $e){
             return JsonService::fail('error',$e->getMessage());
@@ -70,6 +70,36 @@ class Logins extends Controller{
         return $info;
     }
 
+    /**
+     * 商户登录
+     * @param string $user_name
+     * @param string $user_passwd
+     */
+    public function login()
+    {
+        $post = $this->request->post();
+        if(!$post['user_name']) return JsonService::fail('用户名不能为空');
+        if(!$post['user_passwd']) return JsonService::fail('密码不能为空');
+
+        $user= Db::name('merchant')->where(['account'=>$post['user_name']])->field('id,account,pwd')->find();
+
+        if(strtolower($user['pwd'])==strtolower($post['user_passwd'])){
+            $data['id']=$user['id'];
+            $data['account']=$user['account'];
+            return JsonService::successful($data);
+        } else {
+            return JsonService::fail('登录失败');
+
+        }
+    }
+
+    /**
+     * @return Request
+     */
+    public function restPwd()
+    {
+        return $this->request;
+    }
 
     /**
      * 获取用户手机号码

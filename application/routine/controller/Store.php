@@ -118,7 +118,7 @@ class Store extends AuthController{
             'province'=>$post['province'],
             'city'=>$post['city'],
             'district'=>$post['district'],
-            'address'  => $post['address'],
+            'bank_address'  => $post['address'],
             'user_name'=>$post['user_name'],
             'phone'=>$post['phone'],
             'bank_code'=>$post['bank_code'],
@@ -198,11 +198,57 @@ class Store extends AuthController{
         if($list){
             return JsonService::successful('ok',$list);
         }else{
-            return  JsonService::fail('添加失败');
+            return  JsonService::successful('暂无数据');
+        }
+
+    }
+    /**
+     * 核销记录
+     * mr.hu ok
+     * @return Request
+     */
+    public function getWriteCodeList()
+    {
+        $post = $this->request->post();
+        if(!isset($post['uid'])||!isset($post['sid'])) return JsonService::fail('参数错误');
+
+        $list = Db::name('pink_order')->where(['sid'=>$post['sid'],'uid'=>$post['uid'],'is_shop'=>1])->order('id DESC')->select();
+        if($list){
+            return JsonService::successful('ok',$list);
+        }else{
+            return  JsonService::successful('暂无数据');
         }
 
     }
 
+    /**
+     * 核销码核销
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     */
+    public function writeCode()
+    {
+        $post = $this->request->post();
+        if(!isset($post['uid'])||!isset($post['sid'])) return JsonService::fail('参数错误');
+        if(!isset($post['code'])) return JsonService::fail('核销码不能为空');
+
+        $info = Db::name('pink_order')->where(['sid'=>$post['sid'],'uid'=>$post['uid'],'code'=>$post['code']])->find();
+        if($info){
+         $res= Db::name('pink_order')->where(['sid'=>$post['sid'],'uid'=>$post['uid'],'code'=>$post['code']])->update(['is_shop'=>1,'status'=>2]);
+
+         if($res){
+             return JsonService::successful('核销成功');
+         }else{
+             return  JsonService::fail('核销失败');
+         }
+        }else{
+            return  JsonService::successful('核销码不存在');
+        }
+
+    }
 
     //生成提现单号
     private  function getNewId()
@@ -211,34 +257,42 @@ class Store extends AuthController{
     }
 
     /**
-     * 获取拼团产品详情
+     * 查看拼团产品详情
      *
      * @param int $id
      */
-    public function combination_detail(){
+    public function pink_detail(){
         $post = $this->request->post();
         if(!$post['id']) return JsonService::fail('拼团不存在或已下架');
 
-        $info = Db::name('pink')->where('id',$post['id'])->find();
+        if(!$post['uid']){
+            return JsonService::fail('参数错误');
+        }
+
+        $info = Db::name('pink')->where(['id'=>$post['id'],'uid'=>$post['uid']])->find();
+
         if(!$info) return JsonService::fail('拼团不存在或已下架');
+
       //  $pink_order_list= Db::name('pink_order')->where('pid',$info['pid'])->field('id DESC')->select();
 
         $info['picture'] = json_decode($info['picture'],true);
 
      //   $combinationOne['userCollect'] = StoreProductRelation::isProductRelation($id,$this->userInfo['uid'],'collect','pink_product');
 
-        $pink = PinkOrder::getPinkAll($post['id']);//拼团列表
+        $pink = PinkOrder::getPinkAll($post['id'],2);//拼团列表
         $pindAll = array();
         foreach ($pink as $k=>$v){
-            $pink[$k]['count'] = PinkOrder::getPinkPeople($v['id'],$v['people']);
+            $count = PinkOrder::getPinkPeople($v['id'],$v['people']);
+            $pink[$k]['pink']= $count==$v['people']?'1':0; //1拼团成功
+            $pink[$k]['count']=$count;
             $pink[$k]['h'] = date('H',$v['stop_time']);
             $pink[$k]['i'] = date('i',$v['stop_time']);
             $pink[$k]['s'] = date('s',$v['stop_time']);
             $pindAll[] = $v['id'];//开团团长ID
         }
-        $user = WechatUser::get($this->userInfo['uid'])->toArray();//用户信息
+       // $user = WechatUser::get($this->userInfo['uid'])->toArray();//用户信息
         $data['pink'] = $pink;
-        $data['user'] = $user;
+      //  $data['user'] = $user;
         $data['pindAll'] = $pindAll;
         $data['storeInfo'] =$info;
         return JsonService::successful('ok,',$data);

@@ -87,8 +87,7 @@
 
                     <script type="text/html" id="handle">
                         <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</button> -->
-                        <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>通过</button>
-                        <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>不通过</button>
+                        <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>禁用</button>
                         <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="delete"><i class="layui-icon layui-icon-delete"></i>删除</button> -->
                     </script>
 
@@ -139,7 +138,7 @@
         })
     });
     layList.form.render();
-    layList.tableList('extractLst',"{:Url('extract.extract/get_extract_lst')}", function () {
+    layList.tableList('extractLst',"{:Url('extract.extract/get_unprocessed_list')}", function () {
         return [
             {field: 'id', title: '序号', width:'6%',event:'id'},
             {field: 'merchant_name', title: '商户名称', width:'17%', },
@@ -148,7 +147,7 @@
             {field: 'extract_price', title: '金额',align:'center',width:'8%'},
             {field: 'add_time', title: '创建时间',align:'center',width:'12%'},
             {field: 'detail', title: '提现详情',align:'center',width:'12%', toolbar:'#detailData'},
-            {fixed: 'right', title: '操作',align:'center',width:'15%', toolbar:'#handle'},
+            // {fixed: 'right', title: '操作',align:'center',width:'15%', toolbar:'#handle'},
         ];
     });
     layList.date('add_time');
