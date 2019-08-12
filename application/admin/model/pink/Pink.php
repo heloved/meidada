@@ -52,11 +52,13 @@ class Pink extends ModelBasic
 
     public static function getPinkList($where){
 
-        $field = array('id','uid','pname','address','tel','num', 'people', 
+        $field = array('id','uid','pname','address','tel','num', 'people',
                 'price', 'add_time', 'stop_time', 'status', 'poster', 'picture', 
                 'detail_image', 'info', 'remark', 'directions', 'shop_name', 'create_time', 'service_tel', 'notice');
         $model = self::setWherePage(self::setWhere($where),$where, $field);
-        $list = $model->field('*')
+        $list =  $model->alias('p')
+            ->join('merchant m','p.sid=m.id')
+            ->field('p.*,m.account,m.phone,m.merchant_name')
             ->page((int)$where['page'],(int)$where['limit'])
             ->select()
             ->each(function ($item){
