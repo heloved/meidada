@@ -20,6 +20,7 @@ class JsonService
     }
     public static function successlayui($count=0,$data=[],$msg='')
     {
+        
         if(is_array($count)){
             if(isset($count['data'])) $data=$count['data'];
             if(isset($count['count'])) $count=$count['count'];

@@ -252,8 +252,9 @@
         }
     });
     layList.search('search',function(where){
-        if(where['user_time_type'] != '' && where['user_time'] == '') return layList.msg('请选择选择时间');
-        if(where['user_time_type'] == '' && where['user_time'] != '') return layList.msg('请选择访问情况');
+        console.log(where);
+        // if(where['user_time_type'] != '' && where['user_time'] == '') return layList.msg('请选择选择时间');
+        // if(where['user_time_type'] == '' && where['user_time'] != '') return layList.msg('请选择访问情况');
         layList.reload(where);
     });
 

@@ -51,6 +51,7 @@ class Extract extends AuthController
     public function get_extract_lst(Request $request){
         $data = $request->param();
 
+
         //获取每页显示的条数
         $limit= $data['limit'];
         //获取当前页数
@@ -60,9 +61,7 @@ class Extract extends AuthController
         if(isset($data['status'])&& !empty($data['status'])){
             $where['status']=$data['status'];
         }
-
         $count= DB::name('extract')->where($where)->field('*')->count();
-
         //计算出从那条开始查询
         $tol=($page-1)*$limit;
 
@@ -89,7 +88,7 @@ class Extract extends AuthController
         return $this->fetch();
 
     }
-    
+
     public function get_unprocessed_list(Request $request)
     {
         $data = $request->param();
