@@ -118,7 +118,7 @@ class Store extends AuthController{
             'province'=>$post['province'],
             'city'=>$post['city'],
             'district'=>$post['district'],
-            'address'  => $post['address'],
+            'bank_address'  => $post['address'],
             'user_name'=>$post['user_name'],
             'phone'=>$post['phone'],
             'bank_code'=>$post['bank_code'],
