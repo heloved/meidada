@@ -38,9 +38,7 @@ class Pink extends AuthController
      */
     public function index()
     {
-
         return $this->fetch();
-
     }
 
 
@@ -65,17 +63,18 @@ class Pink extends AuthController
     */
     public function edit()
     {
-        $post = $this->request->post();
+        $param = $this->request->param();
 
-        if(!isset($post['id'])){
+        if(!isset($param['id'])){
             JsonService::fail('缺少参数');
         }
-        $res =  Db::name('pink')->where('id',$post['id'])->find();
+
+        $res =  Db::name('pink')->where('id',$param['id'])->find();
+        // dump($res);
 
         $this->assign('info',$res);
         return $this->fetch();
     }
-
 
     
 
@@ -95,24 +94,24 @@ class Pink extends AuthController
                 JsonService::fail('拼团已开始，不能编辑');
             }
 
-                $data = array(
-                    'pname'   => $post['pname'],
-                    'service_tel'=>$post['service_tel'],
-                    'num'   => $post['num'],
-                    'address'   => $post['address'],
-                    'people'   => $post['people'],
-                    'price'   => $post['price'],
-                    'add_time'   => $post['add_time'],
-                    'stop_time'=>$post['stop_time'],
-                    'picture'=>$post['picture'],
-                    'detail_image'=>$post['detail_image'],
-                    'info'=>$post['info'],
-                    'directions'=>$post['directions'],
-                    'shop_name'=>$post['shop_name'],
-                    'notice'=>$post['notice'],
-                    'status'   => $post['status']
-                );
-                $res = Db::name('pink')->where('id',$post['id'])->update($data);
+            $data = array(
+                'pname'   => $post['pname'],
+                'service_tel'=>$post['service_tel'],
+                'num'   => $post['num'],
+                'address'   => $post['address'],
+                'people'   => $post['people'],
+                'price'   => $post['price'],
+                'add_time'   => $post['add_time'],
+                'stop_time'=>$post['stop_time'],
+                'picture'=>$post['picture'],
+                'detail_image'=>$post['detail_image'],
+                'info'=>$post['info'],
+                'directions'=>$post['directions'],
+                'shop_name'=>$post['shop_name'],
+                'notice'=>$post['notice'],
+                'status'   => $post['status']
+            );
+            $res = Db::name('pink')->where('id',$post['id'])->update($data);
 
 
             if($res){
@@ -142,7 +141,7 @@ class Pink extends AuthController
         if(time()>$add_time){
             JsonService::fail('拼团已开始，不能删除');
         }
-        $res = Db::name('pink')->where('id',$post['id'])->delete();
+        $res=Db::name('pink')->where(['id'=>$post['id']])->update(['status'=>3]);
 
         if($res){
             return JsonService::successful('删除成功');
@@ -188,32 +187,6 @@ class Pink extends AuthController
         $this->assign('list',$pink_order_list);
 
         return $this->fetch();
-    }
-
-
-    /**
-     * 删除
-     */
-    public function delete(Request $request){
-        $post = $request->post();
-
-        if(!isset($post['id']) || !isset($post['status'])){
-            return JsonService::fail('缺少参数');
-        }
-        
-        // 是否在活动中
-        $infor = Db::name('pink')->where(['id'=>$post['id']])->find();
-        $time = time();
-        if($infor['add_time'] <=$time && $time <=$infor['stop_time'] && $infor['status'] ==1){
-            return JsonService::fail('拼团中请勿删除');
-        }
-
-        $res=Db::name('pink')->where(['id'=>$post['id']])->update(['status'=>(int)$post['status']]);
-        if($res){
-            return JsonService::successful('删除成功');
-        }else{
-            return JsonService::fail('删除失败');
-        }
     }
 
 }

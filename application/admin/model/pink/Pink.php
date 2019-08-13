@@ -55,7 +55,7 @@ class Pink extends ModelBasic
         $field = array('id','uid','pname','address','tel','num', 'people',
                 'price', 'add_time', 'stop_time', 'status', 'poster', 'picture', 
                 'detail_image', 'info', 'remark', 'directions', 'shop_name', 'create_time', 'service_tel', 'notice');
-        $model = self::setWherePage(self::setWhere($where),$where, $field);
+        $model = self::setWherePage(self::setWhere($where), $field);
         $list =  $model->alias('p')
             ->join('merchant m','p.sid=m.id')
             ->field('p.*,m.account,m.phone,m.merchant_name')
@@ -68,7 +68,7 @@ class Pink extends ModelBasic
 
             });//->toArray();
   
-        $count=self::setWherePage(self::setWhere($where),$where, $field, [])->count();
+        $count=self::setWherePage(self::setWhere($where), $field, [])->count();
         return ['count'=>$count,'data'=>$list];
     }
 

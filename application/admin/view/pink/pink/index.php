@@ -240,7 +240,7 @@
                 break;
             case 'del':
                 // $eb.createModalFrame('删除',layList.Url({a:'del',p:{id:data.id}}));
-                layList.basePost(layList.Url({a:'set_status'}),{id:data.id,status:3},function (res) {
+                layList.basePost(layList.Url({a:'del'}),{id:data.id},function (res) {
                     layList.msg(res.msg);
                     layList.reload();
                 });
@@ -266,8 +266,8 @@
         }
     });
     layList.search('search',function(where){
-        if(where['user_time_type'] != '' && where['user_time'] == '') return layList.msg('请选择选择时间');
-        if(where['user_time_type'] == '' && where['user_time'] != '') return layList.msg('请选择访问情况');
+        // if(where['user_time_type'] != '' && where['user_time'] == '') return layList.msg('请选择选择时间');
+        // if(where['user_time_type'] == '' && where['user_time'] != '') return layList.msg('请选择访问情况');
         layList.reload(where);
     });
 
