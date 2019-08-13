@@ -186,7 +186,7 @@ class Merchant extends AuthController
         if(!isset($post['id'])){
             JsonService::fail('缺少参数');
         }
-        $res = Db::name('merchant')->update($post);
+        $res = Db::name('merchant')->where('id',$post['id'])->update(['status'=>$post['status']]);
 
         if($res){
             return JsonService::successful('操作成功');

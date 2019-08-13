@@ -223,7 +223,7 @@
                 $eb.createModalFrame('删除',layList.Url({a:'del',p:{id:data.id}}));
                 break;
             case 'enable':
-                layList.basePost(layList.Url({c:'merchant.merchant',a:'changeStatus'}),{id:data.id,status:1},function (res) {
+                layList.basePost(layList.Url({c:'merchant.merchant',a:'changeStatus'}),{id:data.id,status:0},function (res) {
                     layList.msg(res.msg);
                     layList.reload();
                 });

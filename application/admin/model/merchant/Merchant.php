@@ -58,7 +58,7 @@ class Merchant extends ModelBasic
      * @return array
      */
     public static function getUserList($where){
-        $model = self::setWherePage(self::setWhere($where),$where,['account','pwd','phone','status','merchant_name','uid']);
+        $model = self::setWherePage(self::setWhere($where),['account','pwd','phone','status','merchant_name','uid']);
         $list = $model->field('*')
             ->page((int)$where['page'],(int)$where['limit'])
             ->select()
@@ -67,7 +67,7 @@ class Merchant extends ModelBasic
 
             });//->toArray();
 
-        $count=self::setWherePage(self::setWhere($where),$where,['account','pwd','phone','status','merchant_name'],['merchant_name','uid'])->count();
+        $count=self::setWherePage(self::setWhere($where),['account','pwd','phone','status','merchant_name'],['merchant_name','uid'])->count();
         return ['count'=>$count,'data'=>$list];
     }
 
