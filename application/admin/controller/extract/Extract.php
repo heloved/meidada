@@ -162,14 +162,16 @@ class Extract extends AuthController
      */
     public function getInfo()
     {
-        $post = $this->request->post();
+        $id = (int)$this->request->param('id');
 
-        if(!isset($post['id'])){
+        if($id<1){
             JsonService::fail('缺少参数');
         }
-        $res =  Db::name('extract')->where('id',$post['id'])->find();
 
-       $merchant = Db::name('merchant')->where(['uid'=>$res['uid']])->field('account,merchant_name')->find();
+
+        $res =  Db::name('extract')->where('id',$id)->find();
+
+        $merchant = Db::name('merchant')->where(['uid'=>$res['uid']])->field('account,merchant_name')->find();
         $res['merchant_name']=$merchant['merchant_name'];
         $res['account']= $merchant['account'];
 
@@ -209,7 +211,7 @@ class Extract extends AuthController
         }
         
         $field = 'id,uid, bank_code, extract_price, add_time';
-        $list = DB::name('extract')->field($field)->where(['status'=>1,'id'=>$id])->select();
+        $list = DB::name('extract')->field($field)->where(['id'=>$id])->select();
 
         if(!empty($list)){
             foreach ($list as $k=>$v){

@@ -189,7 +189,7 @@
                 $eb.createModalFrame(data.nickname+'停用',layList.Url({a:'see',p:{uid:data.uid}}));
                 break;
             case 'detail':
-                $eb.createModalFrame('提现详情',layList.Url({a:'index_alert',p:{id:data.id}}));
+                $eb.createModalFrame('提现详情',layList.Url({a:'getInfo',p:{id:data.id}}));
                 break;
         }
     });
