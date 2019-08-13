@@ -122,6 +122,7 @@ class Users extends AuthController{
 
     /**
      * 拼团列表（参团）
+     * mr.hu
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
@@ -145,6 +146,7 @@ class Users extends AuthController{
 
     /**
      * 拼团 加入到购物车
+     * mr,hu
      * @param string $productId
      * @param int $cartNum
      * @param int $combinationId
@@ -182,6 +184,7 @@ class Users extends AuthController{
     }
     /**
      * 订单页面
+     * mr.hu
      * @param Request $request
      * @return \think\response\Json
      */
@@ -209,6 +212,7 @@ class Users extends AuthController{
     }
     /**
      * 创建订单
+     * mr.hu
      * @param string $key
      * @return \think\response\Json
      */
@@ -242,6 +246,8 @@ class Users extends AuthController{
                 $orderInfo = StoreOrder::where('order_id',$orderId)->find();
                 if(!$orderInfo || !isset($orderInfo['paid'])) exception('支付订单不存在!');
                 if($orderInfo['paid']) exception('支付已支付!');
+
+
                 //如果支付金额为0
                 if(bcsub((float)$orderInfo['pay_price'],0,2) <= 0){
                     //创建订单jspay支付
@@ -250,6 +256,7 @@ class Users extends AuthController{
                     else
                         return JsonService::status('pay_error',StoreOrder::getErrorInfo());
                 }else{
+
                     try{
                         $jsConfig = StoreOrder::jsPay($orderId);//创建订单jspay
                     }catch (\Exception $e){
@@ -262,6 +269,113 @@ class Users extends AuthController{
         }else{
             return JsonService::fail(StoreOrder::getErrorInfo('订单生成失败!'));
         }
+    }
+
+    
+    /**
+     * 开团页面
+     * mr.hu
+     * @param int $id
+     * @return mixed
+     */
+    public function get_pink($id = 0){
+        if(!$id) return JsonService::fail('参数错误');
+        $pink = PinkOrder::getPinkUserOne($id);
+        if(isset($pink['is_refund']) && $pink['is_refund']) {
+            if($pink['is_refund'] != $pink['id']){
+                $id = $pink['is_refund'];
+                return $this->get_pink($id);
+            }else{
+                return JsonService::fail('订单已退款');
+            }
+        }
+        if(!$pink) return JsonService::fail('参数错误');
+        $pinkAll = array();//参团人  不包括团长
+        $pinkT = array();//团长
+        if($pink['k_id']){
+            $pinkAll = PinkOrder::getPinkMember($pink['k_id']);
+            $pinkT = PinkOrder::getPinkUserOne($pink['k_id']);
+        }else{
+            $pinkAll = PinkOrder::getPinkMember($pink['id']);
+            $pinkT = $pink;
+        }
+        $store_combination = Pink::getCombinationOne($pink['cid']);//拼团产品
+        $count = count($pinkAll)+1;
+        $count = (int)$pinkT['people']-$count;//剩余多少人
+        $is_ok = 0;//判断拼团是否完成
+        $idAll =  array();
+        $uidAll =  array();
+        if(!empty($pinkAll)){
+            foreach ($pinkAll as $k=>$v){
+                $idAll[$k] = $v['id'];
+                $uidAll[$k] = $v['uid'];
+            }
+        }
+
+        $userBool = 0;//判断当前用户是否在团内  0未在 1在
+        $pinkBool = 0;//判断当前用户是否在团内  0未在 1在
+        $idAll[] = $pinkT['id'];
+        $uidAll[] = $pinkT['uid'];
+        if($pinkT['status'] == 2){
+            $pinkBool = 1;
+            $is_ok = 1;
+        }else{
+            if(!$count){//组团完成
+                $is_ok = 1;
+                $idAll = implode(',',$idAll);
+                $orderPinkStatus = PinkOrder::setPinkStatus($idAll);
+                if($orderPinkStatus){
+                    if(in_array($this->userInfo['uid'],$uidAll)){
+                      //  PinkOrder::setPinkStopTime($idAll);
+                     //   if(PinkOrder::isTpl($uidAll,$pinkT['id'])) PinkOrder::orderPinkAfter($uidAll,$pinkT['id']);//xiaoxi
+                        $pinkBool = 1;
+                    }else  $pinkBool = 3;
+                }else $pinkBool = 6;
+            }
+            else{
+                if($pinkT['stop_time'] < time()){//拼团时间超时  退款
+                    if($pinkAll){
+                        foreach ($pinkAll as $v){
+                            if($v['uid'] == $this->userInfo['uid']){
+                                $res = StoreOrder::orderApplyRefund(StoreOrder::where('id',$v['order_id_key'])->value('order_id'),$this->userInfo['uid'],'拼团时间超时');
+                                if($res){
+                                    if(PinkOrder::isTpl($v['uid'],$pinkT['id'])) PinkOrder::orderPinkAfterNo($v['uid'],$v['k_id']);
+                                    $pinkBool = 2;
+                                }else return JsonService::fail(StoreOrder::getErrorInfo());
+                            }
+                        }
+                    }
+                    if($pinkT['uid'] == $this->userInfo['uid']){
+                        $res = StoreOrder::orderApplyRefund(StoreOrder::where('id',$pinkT['order_id_key'])->value('order_id'),$this->userInfo['uid'],'拼团时间超时');
+                        if($res){
+                            if(PinkOrder::isTpl($pinkT['uid'],$pinkT['id']))  PinkOrder::orderPinkAfterNo($pinkT['uid'],$pinkT['id']);
+                            $pinkBool = 2;
+                        }else return JsonService::fail(StoreOrder::getErrorInfo());
+                    }
+                    if(!$pinkBool) $pinkBool = 3;
+                }
+            }
+        }
+     //   $store_combination_host =  StoreCombination::getCombinationHost();//获取推荐的拼团产品
+        if(!empty($pinkAll)){
+            foreach ($pinkAll as $v){
+                if($v['uid'] == $this->userInfo['uid']) $userBool = 1;
+            }
+        }
+        if($pinkT['uid'] == $this->userInfo['uid']) $userBool = 1;
+        $combinationOne = Pink::getCombinationOne($pink['cid']);
+        if(!$combinationOne) return JsonService::fail('拼团不存在或已下架');
+        $store_combination['userInfo'] = $this->userInfo;
+        $data['pinkBool'] = $pinkBool;
+        $data['is_ok'] = $is_ok;
+        $data['userBool'] = $userBool;
+        $data['store_combination'] = $store_combination;
+        $data['pinkT'] = $pinkT;
+        $data['pinkAll'] = $pinkAll;
+        $data['count'] = $count;
+     //   $data['store_combination_host'] = $store_combination_host;
+        $data['current_pink_order'] = PinkOrder::getCurrentPink($id);
+        return JsonService::successful($data);
     }
 
 }

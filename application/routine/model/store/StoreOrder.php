@@ -423,7 +423,8 @@ class StoreOrder extends ModelBasic
     }
 
     /**
-     * //TODO 支付成功后
+     * //TODO 支付成功后 回调操作
+     * mr.hu
      * @param $orderId
      * @param $paytype
      * @param $notify
@@ -438,16 +439,15 @@ class StoreOrder extends ModelBasic
         foreach ($cartInfo as $k=>&$cart) $cart = json_decode($cart, true);
         $res2 = true;
         foreach ($cartInfo as $k=>&$cart){  //减库存加销量
-            if($cart['combination_id']) $res2 = $res2 && StoreCombination::decCombinationStock($cart['cart_num'],$cart['combination_id']);
-            else if($cart['seckill_id']) $res2 = $res2 && StoreSeckill::decSeckillStock($cart['cart_num'],$cart['seckill_id']);
-            else if($cart['bargain_id']) $res2 = $res2 && StoreBargain::decBargainStock($cart['cart_num'],$cart['bargain_id']);
-            else $res2 = $res2 && StoreProduct::decProductStock($cart['cart_num'],$cart['productInfo']['id'],isset($cart['productInfo']['attrInfo']) ? $cart['productInfo']['attrInfo']['unique']:'');
+            if($cart['combination_id']) $res2 = $res2 && Pink::decCombinationStock($cart['cart_num'],$cart['combination_id']);
+
         }
         User::bcInc($order['uid'],'pay_count',1,'uid');
-        if($order->combination_id && $res1 && !$order->refund_status) $resPink = StorePink::createPink($order);//创建拼团
+        if($order->combination_id && $res1 && !$order->refund_status) $resPink = PinkOrder::createPink($order);//创建拼团
         $oid = self::where('order_id',$orderId)->value('id');
         StoreOrderStatus::status($oid,'pay_success','用户付款成功');
-        RoutineTemplate::sendOrderSuccess($formId,$orderId);
+
+      //  RoutineTemplate::sendOrderSuccess($formId,$orderId);//xiaoxi
         $res = $res1 && $resPink && $res2;
         return false !== $res;
     }

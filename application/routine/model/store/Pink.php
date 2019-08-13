@@ -86,17 +86,15 @@ class Pink extends ModelBasic
 
     /**
      * 获取一条拼团数据
+     * mr.hu
      * @param $id
      * @return mixed
      */
     public static function getCombinationOne($id){
         $model = new self();
-        $model = $model->alias('c');
-        $model = $model->join('StoreProduct s','s.id=c.product_id');
-        $model = $model->field('c.*,s.price as product_price');
-        $model = $model->where('c.is_show',1);
-        $model = $model->where('c.is_del',0);
-        $model = $model->where('c.id',$id);
+        $model = $model->field('*');
+        $model = $model->where('status',1);
+        $model = $model->where('id',$id);
 //        $model = $model->where('c.start_time','LT',time());
 //        $model = $model->where('c.stop_time','GT',time()-86400);
         $list = $model->find();

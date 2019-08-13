@@ -46,6 +46,7 @@ class PinkOrder extends ModelBasic
 
     /**
      * 获取拼团的团员
+     * mr.hu
      * @param $id
      * @return mixed
      */
@@ -85,7 +86,7 @@ class PinkOrder extends ModelBasic
         $model = $model->where('stop_time','GT',time());
         $model = $model->where('pid',$pid);
         $model = $model->where('k_id',0);
-     //   $model = $model->where('is_refund',0);
+        $model = $model->where('is_refund',0);
         $model = $model->order('add_time desc');
         $model = $model->join('__USER__ u','u.uid = p.uid');
         if($limit){
@@ -103,7 +104,7 @@ class PinkOrder extends ModelBasic
      */
     public static function getPinkPeople($kid,$people){
         $model = new self();
-        $model = $model->where('k_id',$kid)->where('status',1);
+        $model = $model->where('k_id',$kid)->where('is_refund',0);
         $count = bcadd($model->count(),1,0);
         return bcsub($people,$count,0);
     }
@@ -195,6 +196,7 @@ class PinkOrder extends ModelBasic
 
     /**
      * 获取当前拼团数据返回订单编号
+     * mr.hu
      * @param $id
      * @return array|false|\PDOStatement|string|\think\Model
      */
@@ -202,7 +204,7 @@ class PinkOrder extends ModelBasic
         $uid = User::getActiveUid();//获取当前登录人的uid
         $pink = self::where('id',$id)->where('uid',$uid)->find();
         if(!$pink) $pink = self::where('k_id',$id)->where('uid',$uid)->find();
-        return StoreOrder::where('id',$pink['order_id_key'])->value('order_id');
+        return StoreOrder::where('id',$pink['oid'])->value('order_id');
     }
 
     public static function systemPage($where){
@@ -310,7 +312,7 @@ class PinkOrder extends ModelBasic
      */
     public static function createPink($order){
         $order = StoreOrder::tidyOrder($order,true)->toArray();
-        if($order['pink_id']){//拼团存在
+        if($order['pink_id']){//拼团存在 参团
             $res = false;
             $pink['uid'] = $order['uid'];//用户id
             if(self::isPinkBe($pink,$order['pink_id'])) return false;
@@ -320,12 +322,14 @@ class PinkOrder extends ModelBasic
             $pink['total_price'] = $order['pay_price'];//总金额
             $pink['k_id'] = $order['pink_id'];//拼团id
             foreach ($order['cartInfo'] as $v){
+                $info =   Pink::where('id',$v['combination_id'])->field('add_time,stop_time,people')->find();
+
                 $pink['cid'] = $v['combination_id'];//拼团产品id
                 $pink['pid'] = $v['product_id'];//产品id
-                $pink['people'] = StoreCombination::where('id',$v['combination_id'])->value('people');//几人拼团
+                $pink['people'] =$info['people'];//几人拼团
                 $pink['price'] = $v['productInfo']['price'];//单价
-                $pink['stop_time'] = 0;//结束时间
-                $pink['add_time'] = time();//开团时间
+                $pink['stop_time'] =$info['stop_time'];//结束时间
+                $pink['add_time'] = $info['add_time'];//开团时间
                 $res = StorePink::set($pink)->toArray();
             }
             if($res) return true;
@@ -339,14 +343,13 @@ class PinkOrder extends ModelBasic
             $pink['total_price'] = $order['pay_price'];//总金额
             $pink['k_id'] = 0;//拼团id
             foreach ($order['cartInfo'] as $v){
+                $info =   Pink::where('id',$v['combination_id'])->field('add_time,stop_time,people')->find();
                 $pink['cid'] = $v['combination_id'];//拼团产品id
                 $pink['pid'] = $v['product_id'];//产品id
-                $pink['people'] = StoreCombination::where('id',$v['combination_id'])->value('people');//几人拼团
+                $pink['people'] =$info['people'];//几人拼团
                 $pink['price'] = $v['productInfo']['price'];//单价
-//                $stopTime = StoreCombination::where('id',$v['combination_id'])->value('stop_time');//获取拼团产品结束的时间
-//                if($stopTime < time()+86400)  $pink['stop_time'] = $stopTime;//结束时间
-                $pink['stop_time'] = time()+86400;//结束时间
-                $pink['add_time'] = time();//开团时间
+                $pink['stop_time'] =$info['stop_time'];//结束时间
+                $pink['add_time'] = $info['add_time'];//开团时间
                 $res1 = self::set($pink)->toArray();
                 $res2 = StoreOrder::where('id',$order['id'])->update(['pink_id'=>$res1['id']]);
                 $res = $res1 && $res2;
