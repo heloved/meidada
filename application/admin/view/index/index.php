@@ -270,7 +270,7 @@
             });
         }
         getnotice();
-        // setInterval(getnotice, 3000);
+        setInterval(getnotice, 3000);
     });
 
 </script>

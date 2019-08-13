@@ -17,29 +17,20 @@
                     <thead>
                     <tr>
                         <th class="text-center" width="5%">序号</th>
-                        <th class="text-center" width="28%">店名</th>
-                        <th class="text-center" width="10%">账号</th>
-                        <th class="text-center" width="10%">银行卡</th>
-                        <th class="text-center" width="10%">提现金额</th>
-                        <th class="text-center" width="10%">提现时间</th>
+                        <th class="text-center" width="28%">电话号码</th>
+                        <th class="text-center" width="10%">状态</th>
+                        <th class="text-center" width="10%">到店情况</th>
+                        <th class="text-center" width="20%">核销码</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {volist name="lst" id="vo"}
+                    {volist name="list" id="vo"}
                     <tr>
                         <td class="text-center">{$vo.id}</td>
-                        <td class="text-center">{$vo.merchant_name}</td>
-                        <td class="text-center">
-                            <!-- <img src=""/> -->{$vo.account}
-                        </td>
-                        <td>{$vo.bank_code}</td>
-                        <td class="text-center">
-                            {$vo.extract_price}
-                        </td>
-
-                        <td class="text-center">
-                            {$vo.add_time|date='Y-m-d',###}
-                        </td>
+                        <td class="text-center">{$vo.phone}</td>
+                        <td class="text-center"><!-- <img src=""/> -->{$vo.k_id} </td>
+                        <td class="text-center"> {$vo.is_shop} </td>
+                        <td class="text-center"> {$vo.code} </td>
                     </tr>
                     {/volist}
                     </tbody>

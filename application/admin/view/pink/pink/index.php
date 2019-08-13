@@ -52,25 +52,23 @@
                     </a>
                 </div>
             </div>
-            <div class="ibox-content" style="display: none;">
-                <div class="alert alert-success alert-dismissable">
-                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                    搜索
-                </div>
-                <form class="layui-form">
+            <div class="ibox-content">
+             
+                <form class="layui-form" style="margin-top:20px;">
                     <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">拼团名称：</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="merchant_name" lay-verify="merchant_name" style="width: 100%" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
+                                <input type="text" name="pname" lay-verify="pname" style="width: 100%" autocomplete="off" placeholder="请输入拼团名称" class="layui-input">
                             </div>
                         </div>
-                        <div class="layui-inline">
+                        <!-- <div class="layui-inline">
                             <label class="layui-form-label">账号：</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="account" lay-verify="account" style="width: 100%" autocomplete="off" placeholder="请输入商户账号" class="layui-input">
                             </div>
-                        </div>
+                        </div> -->
+                    </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">
                             <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit="" lay-filter="search" >
@@ -104,7 +102,7 @@
 
 
                     <script type="text/html" id="detailData">
-                        <a href="#">查看详情</a>
+                        <span style="color:#01AAED;cursor:pointer;" lay-event="detail">拼团详情</span>
                     </script>
 
 
@@ -129,14 +127,23 @@
 
 
                     <script type="text/html" id="handle">
+
                         <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</button>
 
-                        <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button> -->
-                        {{#  if(d.status == 0){  }}
-                        <button type="button" class="layui-btn layui-btn-xs" lay-event="disable" style="background-color:#FF5722"><i class="layui-icon layui-icon-face-cry"></i>禁用</button>
-                        {{#  }else{   }}
-                        <button type="button" class="layui-btn layui-btn-xs" lay-event="enable"><i class="layui-icon layui-icon-ok"></i>启用</button>
+                        {{#  if(d.status == 1){  }}
+                            <button type="button" class="layui-btn layui-btn-xs" lay-event="stop" style="background-color:#FFB800">
+                                <i class="layui-icon layui-icon-face-cry"></i>停用
+                            </button>
+                        {{#  }else if(d.status ==2) {   }}
+                            <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="pass"><i class="layui-icon layui-icon-ok"></i>启用</button> -->
+                        {{#  }else if(d.status ==-1){ }}
+                            <!-- <button type="button" class="layui-btn layui-btn-xs layui-btn-disabled" ><i class="layui-icon layui-icon-ok"></i>未通过</button> -->
                         {{#  }  }}
+
+                        <button type="button" class="layui-btn layui-btn-xs" lay-event="del" style="background-color:#FF5722">
+                            <i class="layui-icon layui-icon-delete"></i>删除
+                        </button>
+
                     </script>
                 </div>
             </div>
@@ -188,14 +195,14 @@
         return [
             // {type:'checkbox'},
             {field: 'id', title: '序号', width:'6%',event:'id'},
-            {field: 'create_time', title: '创建时间', width:'10%', },
-            {field: 'pname', title: '活动名称', width:'10%',},
-            {field: 'shop_name', title: '店名',align:'center',width:'10%'},
+            {field: 'create_time', title: '创建时间', width:'12%', },
+            {field: 'pname', title: '活动名称', width:'15%',},
+            {field: 'shop_name', title: '店名',align:'center',width:'15%'},
             {field: 'account', title: '账号',align:'center',width:'10%'},
-            {field: 'ping_detail', title: '拼团记录',align:'center',width:'12%', toolbar:'#detailData'},
+            {field: 'ping_detail', title: '拼团记录',align:'center',width:'8%', toolbar:'#detailData'},
             {field: 'status', title: '单号',align:'center',width:'8%'},
             {field: 'poster', title: '海报', width: '10%', align: 'center', toolbar: '#posterData'},
-            // {fixed: 'right', title: '操作', width: '10%', align: 'center', toolbar: '#handle'}
+            {fixed: 'right', title: '操作', width: '15%', align: 'center', toolbar: '#handle'}
 
         ];
     });
@@ -222,25 +229,24 @@
         console.log(data);
         switch (layEvent){
             case 'edit':
-                $eb.createModalFrame('编辑',layList.Url({c:'merchant.merchant',a:'edit',p:{id:data.id}}));
+                $eb.createModalFrame('编辑',layList.Url({c:'pink.pink',a:'edit',p:{id:data.id}}));
                 break;
-            case 'see':
-                $eb.createModalFrame('停用',layList.Url({a:'see',p:{id:data.id}}));
+            case 'stop':
+                // $eb.createModalFrame('停用',layList.Url({a:'see',p:{id:data.id}}));
+                layList.basePost(layList.Url({c:'pink.pink',a:'set_status'}),{id:data.id,status:2},function (res) {
+                    layList.msg(res.msg);
+                    layList.reload();
+                });
                 break;
             case 'del':
-                $eb.createModalFrame('删除',layList.Url({a:'del',p:{id:data.id}}));
-                break;
-            case 'enable':
-                layList.basePost(layList.Url({c:'merchant.merchant',a:'changeStatus'}),{id:data.id,status:1},function (res) {
+                // $eb.createModalFrame('删除',layList.Url({a:'del',p:{id:data.id}}));
+                layList.basePost(layList.Url({a:'set_status'}),{id:data.id,status:3},function (res) {
                     layList.msg(res.msg);
                     layList.reload();
                 });
                 break;
-            case 'disable':
-                layList.basePost(layList.Url({c:'merchant.merchant',a:'changeStatus'}),{id:data.id,status:1},function (res) {
-                    layList.msg(res.msg);
-                    layList.reload();
-                });
+            case 'detail':
+                $eb.createModalFrame('拼团详情',layList.Url({a:'getInfo',p:{pid:data.id}}));
                 break;
         }
     });
