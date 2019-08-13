@@ -482,6 +482,7 @@ var Pointer = function (_VNode) {
 
 var Scene = function () {
     function Scene(canvas) {
+        console.log(canvas);
         _classCallCheck(this, Scene);
 
         this.draw = true;
@@ -606,7 +607,7 @@ scene.run();
 
 // const pointer = new Pointer(canvas);
 
-var phrase = '  CRMEB ';
+var phrase = '  MEIDADA ';
 
 var r = new Rope({
     x: scene.canvas.width * 0.15,

@@ -192,4 +192,31 @@ class Extract extends AuthController
         }
     }
 
+
+
+     /**
+     * 显示后台管理员添加的图文
+     * @return mixed
+     */
+    public function index_alert($pid = 0)
+    {
+
+        $field = 'id,uid, bank_code, extract_price, add_time';
+        $list = DB::name('extract')->field($field)->where(['status'=>1])->order('add_time desc')->limit(10)->select();
+
+        if(!empty($list)){
+            foreach ($list as $k=>$v){
+                $merchant_infor = Db::name('merchant')->field('merchant_name,account')->where(['uid'=>$v['uid']])->find();
+                $list[$k]['merchant_name']= $merchant_infor['merchant_name'];
+                $list[$k]['account']= $merchant_infor['account'];
+            }
+        }
+        
+        $this->assign('lst', $list);
+        
+        return $this->fetch();
+    }
+
+
+
 }

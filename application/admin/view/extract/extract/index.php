@@ -103,8 +103,13 @@
 {/block}
 {block name="script"}
 <script>
+    
+    $eb.createModalFrame('提现管理-弹框',layList.Url({a:'index_alert'}));
+
+
     $('#province-div').hide();
     $('#city-div').hide();
+
     layList.select('country',function (odj,value,name) {
         var html = '';
         $.each(city,function (index,item) {
