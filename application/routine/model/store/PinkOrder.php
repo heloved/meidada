@@ -321,6 +321,7 @@ class PinkOrder extends ModelBasic
             $pink['total_num'] = $order['total_num'];//购买个数
             $pink['total_price'] = $order['pay_price'];//总金额
             $pink['k_id'] = $order['pink_id'];//拼团id
+            $pink['code'] =self::getNewOrderId(6);//核销码
             foreach ($order['cartInfo'] as $v){
                 $info =   Pink::where('id',$v['combination_id'])->field('add_time,stop_time,people')->find();
 
@@ -330,6 +331,7 @@ class PinkOrder extends ModelBasic
                 $pink['price'] = $v['productInfo']['price'];//单价
                 $pink['stop_time'] =$info['stop_time'];//结束时间
                 $pink['add_time'] = $info['add_time'];//开团时间
+
                 $res = StorePink::set($pink)->toArray();
             }
             if($res) return true;
@@ -342,6 +344,7 @@ class PinkOrder extends ModelBasic
             $pink['total_num'] = $order['total_num'];//购买个数
             $pink['total_price'] = $order['pay_price'];//总金额
             $pink['k_id'] = 0;//拼团id
+            $pink['code'] =self::getNewOrderId(6);//核销码
             foreach ($order['cartInfo'] as $v){
                 $info =   Pink::where('id',$v['combination_id'])->field('add_time,stop_time,people')->find();
                 $pink['cid'] = $v['combination_id'];//拼团产品id
@@ -350,6 +353,7 @@ class PinkOrder extends ModelBasic
                 $pink['price'] = $v['productInfo']['price'];//单价
                 $pink['stop_time'] =$info['stop_time'];//结束时间
                 $pink['add_time'] = $info['add_time'];//开团时间
+
                 $res1 = self::set($pink)->toArray();
                 $res2 = StoreOrder::where('id',$order['id'])->update(['pink_id'=>$res1['id']]);
                 $res = $res1 && $res2;
@@ -358,6 +362,21 @@ class PinkOrder extends ModelBasic
             else return false;
         }
     }
+
+    //生成核销码
+    private  function getNewOrderId($length)
+    {
+        $str='abcdefghijklmnopqrstuvwxyz0123456789';
+        $len=strlen($str)-1;
+        $randstr='';
+        for($i=0;$i<$length;$i++){
+            $num=mt_rand(0,$len);
+            $randstr .= $str[$num];
+        }
+        return $randstr;
+
+    }
+
 
     /**
      * 拼团成功后给团长返佣金

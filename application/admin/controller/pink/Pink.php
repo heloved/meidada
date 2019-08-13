@@ -90,6 +90,11 @@ class Pink extends AuthController
             if(!isset($post['id'])){
                 JsonService::fail('缺少参数');
             }
+            $add_time=  Db::name('pink')->where('id',$post['id'])->value('add_time');
+            if(time()>$add_time){
+                JsonService::fail('拼团已开始，不能编辑');
+            }
+
                 $data = array(
                     'pname'   => $post['pname'],
                     'service_tel'=>$post['service_tel'],
@@ -121,6 +126,31 @@ class Pink extends AuthController
         }
     }
 
+
+    /**
+     * 删除
+     * @return Request
+     */
+    public function del()
+    {
+        $post = $this->request->post();
+
+        if(!isset($post['id'])){
+            JsonService::fail('缺少参数');
+        }
+        $add_time=  Db::name('pink')->where('id',$post['id'])->value('add_time');
+        if(time()>$add_time){
+            JsonService::fail('拼团已开始，不能删除');
+        }
+        $res = Db::name('pink')->where('id',$post['id'])->delete();
+
+        if($res){
+            return JsonService::successful('删除成功');
+
+        }else{
+            return JsonService::fail('删除失败');
+        }
+    }
     /**
      * 停用
      *
