@@ -271,7 +271,7 @@ class Users extends AuthController{
         }
     }
 
-    
+
     /**
      * 开团页面
      * mr.hu

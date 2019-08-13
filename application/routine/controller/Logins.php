@@ -35,8 +35,8 @@ class Logins extends Controller{
             if(!isset($userInfo['openId'])) return JsonService::fail('openid获取失败');
             if(!isset($userInfo['unionId']))  $userInfo['unionid'] = '';
             $userInfo['session_key'] = $data['session_key'];
-            $userInfo['spid'] = $data['spid'];//推广人ID
-            $userInfo['spreadid'] = (int)$data['spreadid'];//推广人ID 2.5.36
+            $userInfo['spid'] = 0;//$data['spid'];//推广人ID
+            $userInfo['spreadid'] = 0;//(int)$data['spreadid'];//推广人ID 2.5.36
             $dataOauthInfo = RoutineUser::routineOauthnew($userInfo);
             $userInfo['uid'] = $dataOauthInfo['uid'];
             $userInfo['page'] = $dataOauthInfo['page'];
@@ -81,11 +81,12 @@ class Logins extends Controller{
         if(!$post['user_name']) return JsonService::fail('用户名不能为空');
         if(!$post['user_passwd']) return JsonService::fail('密码不能为空');
 
-        $user= Db::name('merchant')->where(['account'=>$post['user_name']])->field('id,account,pwd')->find();
+        $user= Db::name('merchant')->where(['account'=>$post['user_name']])->field('id,account,pwd,merchant_name')->find();
 
         if(strtolower($user['pwd'])==strtolower($post['user_passwd'])){
             $data['id']=$user['id'];
             $data['account']=$user['account'];
+            $data['merchant_name']=$user['merchant_name'];
             return JsonService::successful($data);
         } else {
             return JsonService::fail('登录失败');
@@ -103,6 +104,7 @@ class Logins extends Controller{
 
     /**
      * 获取用户手机号码
+     * mr.hu
      * @param Request $request
      * @return \think\response\Json
      */

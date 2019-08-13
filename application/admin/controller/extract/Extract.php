@@ -147,8 +147,9 @@ class Extract extends AuthController
 
         $list = DB::name('extract')->where($where)->field('*')->limit($tol, $limit)->select();
         foreach ($list as $k=>$v){
-            $list[$k]['merchant_name']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('merchant_name');
-            $list[$k]['account']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('account');
+            $merchant = Db::name('merchant')->where(['uid'=>$v['uid']])->field('account,merchant_name')->find();
+            $list[$k]['merchant_name']=$merchant['merchant_name'];
+            $list[$k]['account']= $merchant['account'];
         }
 
         return Json::successlayui(array('count'=>$count, 'data' => $list));
@@ -159,6 +160,7 @@ class Extract extends AuthController
 
     /**
      * 详情
+     * mr.hu
      * @return Request
      */
     public function getInfo()
@@ -169,6 +171,10 @@ class Extract extends AuthController
             JsonService::fail('缺少参数');
         }
         $res =  Db::name('extract')->where('id',$post['id'])->find();
+
+       $merchant = Db::name('merchant')->where(['uid'=>$res['uid']])->field('account,merchant_name')->find();
+        $res['merchant_name']=$merchant['merchant_name'];
+        $res['account']= $merchant['account'];
 
         $this->assign('info',$res);
 
