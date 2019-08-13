@@ -77,18 +77,28 @@
 
 
 
+                    <!-- 详情 -->
                     <script type="text/html" id="detailData">
-                        提现详情
+                        <span style="color:#01AAED;cursor:pointer;" lay-event="detail">提现详情</span>
                     </script>
+                    <!-- 详情 -->
+
+
+
                     <script type="text/html" id="checkboxstatus">
                         <input type='checkbox' name='status' lay-skin='switch' value="{{d.uid}}" lay-filter='status' lay-text='正常|禁止'  {{ d.status == 1 ? 'checked' : '' }}>
                     </script>
 
 
                     <script type="text/html" id="handle">
-                        <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</button> -->
-                        <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>禁用</button>
-                        <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="delete"><i class="layui-icon layui-icon-delete"></i>删除</button> -->
+                        {{#  if(d.status == 0){  }}
+                            <button type="button" class="layui-btn layui-btn-xs" lay-event="pass"><i class="layui-icon layui-icon-ok"></i>通过</button>
+                            <button type="button" class="layui-btn layui-btn-xs" lay-event="refuse" style="background-color:#FF5722"><i class="layui-icon layui-icon-face-cry"></i>不通过</button>
+                        {{#  }else if(d.status ==1) {   }}
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn-disabled"><i class="layui-icon layui-icon-ok"></i>已提现</button>
+                        {{#  }else if(d.status ==-1){ }}
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn-disabled" ><i class="layui-icon layui-icon-ok"></i>未通过</button>
+                        {{#  }  }}
                     </script>
 
 
@@ -102,8 +112,10 @@
 {/block}
 {block name="script"}
 <script>
+
     $('#province-div').hide();
     $('#city-div').hide();
+
     layList.select('country',function (odj,value,name) {
         var html = '';
         $.each(city,function (index,item) {
@@ -138,16 +150,19 @@
         })
     });
     layList.form.render();
-    layList.tableList('extractLst',"{:Url('extract.extract/get_unprocessed_list')}", function () {
+
+
+
+    layList.tableList('extractLst',"{:Url('extract.extract/get_extract_lst')}", function () {
         return [
             {field: 'id', title: '序号', width:'6%',event:'id'},
             {field: 'merchant_name', title: '商户名称', width:'17%', },
             {field: 'account', title: '账号', width:'10%'},
             {field: 'ordernob', title: '订单号',align:'center',width:'20%'},
             {field: 'extract_price', title: '金额',align:'center',width:'8%'},
-            {field: 'add_time', title: '创建时间',align:'center',width:'12%'},
+            {field: 'add_time', title: '创建时间',align:'center',width:'12%', templet : "<div>{{layui.util.toDateString(d.add_time, 'yyyy-MM-dd')}}</div>"},
             {field: 'detail', title: '提现详情',align:'center',width:'12%', toolbar:'#detailData'},
-            // {fixed: 'right', title: '操作',align:'center',width:'15%', toolbar:'#handle'},
+            {fixed: 'right', title: '操作',align:'center',width:'15%', toolbar:'#handle'},
         ];
     });
     layList.date('add_time');
@@ -171,14 +186,30 @@
     layList.tool(function (event,data) {
         var layEvent = event;
         switch (layEvent){
-            case 'edit':
-                $eb.createModalFrame('编辑',layList.Url({a:'edit',p:{uid:data.uid}}));
+            // case 'edit':
+            //     $eb.createModalFrame('编辑',layList.Url({a:'edit',p:{uid:data.uid}}));
+            //     break;
+            // case 'see':
+            //     $eb.createModalFrame(data.nickname+'停用',layList.Url({a:'see',p:{uid:data.uid}}));
+            //     break;
+            case 'detail':
+                $eb.createModalFrame('提现详情',layList.Url({a:'index_alert',p:{id:data.id}}));
                 break;
-            case 'see':
-                $eb.createModalFrame(data.nickname+'停用',layList.Url({a:'see',p:{uid:data.uid}}));
+            case 'pass':
+                var index = layList.layer.load(0,{ shade: [0.3, '#000']});
+                layList.basePost(layList.Url({c:'extract.extract',a:'set_status'}),{id:data.id,status:1},function (res) {
+                    layList.msg(res.msg);
+                    layList.layer.close(index);
+                    layList.reload();
+                });
                 break;
-            case 'del':
-                $eb.createModalFrame(data.nickname+'删除',layList.Url({a:'del',p:{uid:data.uid}}));
+            case 'refuse':
+                var index = layList.layer.load(0,{ shade: [0.3, '#000']});
+                layList.basePost(layList.Url({c:'extract.extract',a:'set_status'}),{id:data.id,status:-1},function (res) {
+                    layList.msg(res.msg);
+                    layList.layer.close(index);
+                    layList.reload();
+                });
                 break;
         }
     });
@@ -213,17 +244,6 @@
                 });
             }else{
                 layList.msg('请选择要封禁的会员');
-            }
-        },
-        set_status_j:function () {
-            var ids=layList.getCheckData().getIds('uid');
-            if(ids.length){
-                layList.basePost(layList.Url({a:'set_status',p:{is_echo:1,status:1}}),{uids:ids},function (res) {
-                    layList.msg(res.msg);
-                    layList.reload();
-                });
-            }else{
-                layList.msg('请选择要解封的会员');
             }
         },
         set_grant:function () {

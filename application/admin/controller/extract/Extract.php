@@ -137,12 +137,12 @@ class Extract extends AuthController
 
         $where['status']=1;
 
-        $count= DB::name('extract')->where($where)->field('*')->count();
+        $count= DB::name('extract')->where('status','neq',0)->field('*')->count();
 
         //计算出从那条开始查询
         $tol=($page-1)*$limit;
 
-        $list = DB::name('extract')->where($where)->field('*')->limit($tol, $limit)->select();
+        $list = DB::name('extract')->where('status','neq',0)->field('*')->limit($tol, $limit)->select();
         foreach ($list as $k=>$v){
             $list[$k]['merchant_name']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('merchant_name');
             $list[$k]['account']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('account');
@@ -196,9 +196,14 @@ class Extract extends AuthController
      */
     public function index_alert()
     {
+        $id = (int)$this->request->param('id');
 
+        if($id<1){
+            JsonService::fail('缺少参数');
+        }
+        
         $field = 'id,uid, bank_code, extract_price, add_time';
-        $list = DB::name('extract')->field($field)->where(['status'=>1])->order('add_time desc')->limit(10)->select();
+        $list = DB::name('extract')->field($field)->where(['status'=>1,'id'=>$id])->select();
 
         if(!empty($list)){
             foreach ($list as $k=>$v){

@@ -185,7 +185,7 @@
             {field: 'account',  width:'10%',title: '账号',},
             {field: 'pwd', title: '密码',align:'center',width:'10%'},
             {field: 'address', title: '地址',align:'center',width:'22%', toolbar: '#addressData'},
-            {field: 'add_time', title: '入驻时间',align:'center',width:'12%'},
+            {field: 'add_time', title: '入驻时间',align:'center',width:'12%',},
             {field: 'status', title: '状态',align:'center',width:'8%', toolbar:'#statusData'},
             {fixed: 'right', title: '操作', width: '10%', align: 'center', toolbar: '#barDemo'}
 

@@ -78,8 +78,9 @@
 
 
                     <script type="text/html" id="detailData">
-                        提现详情
+                        <span style="color:#01AAED;cursor:pointer;" lay-event="detail">提现详情</span>
                     </script>
+
                     <script type="text/html" id="checkboxstatus">
                         <input type='checkbox' name='status' lay-skin='switch' value="{{d.uid}}" lay-filter='status' lay-text='正常|禁止'  {{ d.status == 1 ? 'checked' : '' }}>
                     </script>
@@ -108,9 +109,6 @@
 {block name="script"}
 <script>
     
-    $eb.createModalFrame('提现管理-弹框',layList.Url({a:'index_alert'}));
-
-
     $('#province-div').hide();
     $('#city-div').hide();
 
@@ -158,7 +156,7 @@
             {field: 'account', title: '账号', width:'10%'},
             {field: 'ordernob', title: '订单号',align:'center',width:'20%'},
             {field: 'extract_price', title: '金额',align:'center',width:'8%'},
-            {field: 'add_time', title: '创建时间',align:'center',width:'12%'},
+            {field: 'add_time', title: '创建时间',align:'center',width:'12%', templet : "<div>{{layui.util.toDateString(d.add_time, 'yyyy-MM-dd')}}</div>"},
             {field: 'detail', title: '提现详情',align:'center',width:'12%', toolbar:'#detailData'},
             {fixed: 'right', title: '操作',align:'center',width:'15%', toolbar:'#handle'},
         ];
@@ -190,10 +188,9 @@
             // case 'see':
             //     $eb.createModalFrame(data.nickname+'停用',layList.Url({a:'see',p:{uid:data.uid}}));
             //     break;
-            // case 'del':
-            //     $eb.createModalFrame(data.nickname+'删除',layList.Url({a:'del',p:{uid:data.uid}}));
-            //     break;
-
+            case 'detail':
+                $eb.createModalFrame('提现详情',layList.Url({a:'index_alert',p:{id:data.id}}));
+                break;
             case 'pass':
                 var index = layList.layer.load(0,{ shade: [0.3, '#000']});
                 layList.basePost(layList.Url({c:'extract.extract',a:'set_status'}),{id:data.id,status:1},function (res) {

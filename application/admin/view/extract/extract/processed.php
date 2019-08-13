@@ -71,24 +71,35 @@
                         <button class="layui-btn layui-btn-sm layui-btn-normal" type="button" data-type="refresh"><i class="layui-icon layui-icon-refresh" ></i>刷新</button>
                     </div>
 
-                    <table class="layui-hide" id="extractLst" lay-filter="extractLst">
+                    <table class="layui-hide" id="extractLst" lay-filter="extractLst"> </table>
 
-                    </table>
-
-
-
-                    <script type="text/html" id="detailData">
-                        提现详情
+                    <!-- 时间 -->
+                    <script type="text/html" id="timeData">
+                        {{layui.util.toDateString(d.add_time, 'yyyy-MM-dd')}}
                     </script>
+                    <!-- 时间 -->
+
+                    <!-- 详情 -->
+                    <script type="text/html" id="detailData">
+                        <span style="color:#01AAED;cursor:pointer;" lay-event="detail">提现详情</span>
+                    </script>
+                    <!-- 详情 -->
+
+
                     <script type="text/html" id="checkboxstatus">
                         <input type='checkbox' name='status' lay-skin='switch' value="{{d.uid}}" lay-filter='status' lay-text='正常|禁止'  {{ d.status == 1 ? 'checked' : '' }}>
                     </script>
 
 
                     <script type="text/html" id="handle">
-                        <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</button> -->
-                        <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>禁用</button>
-                        <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="delete"><i class="layui-icon layui-icon-delete"></i>删除</button> -->
+                        {{#  if(d.status == 0){  }}
+                            <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="pass"><i class="layui-icon layui-icon-ok"></i>通过</button> -->
+                            <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="refuse" style="background-color:#FF5722"><i class="layui-icon layui-icon-face-cry"></i>不通过</button> -->
+                        {{#  }else if(d.status ==1) {   }}
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn-disabled"><i class="layui-icon layui-icon-ok"></i>已提现</button>
+                        {{#  }else if(d.status ==-1){ }}
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn-disabled" ><i class="layui-icon layui-icon-ok"></i>未通过</button>
+                        {{#  }  }}
                     </script>
 
 
@@ -145,9 +156,9 @@
             {field: 'account', title: '账号', width:'10%'},
             {field: 'ordernob', title: '订单号',align:'center',width:'20%'},
             {field: 'extract_price', title: '金额',align:'center',width:'8%'},
-            {field: 'add_time', title: '创建时间',align:'center',width:'12%'},
+            {field: 'add_time', title: '创建时间',align:'center',width:'12%', toolbar:'#timeData'},
             {field: 'detail', title: '提现详情',align:'center',width:'12%', toolbar:'#detailData'},
-            // {fixed: 'right', title: '操作',align:'center',width:'15%', toolbar:'#handle'},
+            {fixed: 'right', title: '操作',align:'center',width:'15%', toolbar:'#handle'},
         ];
     });
     layList.date('add_time');
@@ -177,8 +188,8 @@
             case 'see':
                 $eb.createModalFrame(data.nickname+'停用',layList.Url({a:'see',p:{uid:data.uid}}));
                 break;
-            case 'del':
-                $eb.createModalFrame(data.nickname+'删除',layList.Url({a:'del',p:{uid:data.uid}}));
+            case 'detail':
+                $eb.createModalFrame('提现详情',layList.Url({a:'index_alert',p:{id:data.id}}));
                 break;
         }
     });
