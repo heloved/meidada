@@ -86,10 +86,14 @@
 
 
                     <script type="text/html" id="handle">
-                        <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</button> -->
-                        <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>通过</button>
-                        <button type="button" class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>不通过</button>
-                        <!-- <button type="button" class="layui-btn layui-btn-xs" lay-event="delete"><i class="layui-icon layui-icon-delete"></i>删除</button> -->
+                        {{#  if(d.status == 0){  }}
+                            <button type="button" class="layui-btn layui-btn-xs" lay-event="pass"><i class="layui-icon layui-icon-ok"></i>通过</button>
+                            <button type="button" class="layui-btn layui-btn-xs" lay-event="refuse" style="background-color:#FF5722"><i class="layui-icon layui-icon-face-cry"></i>不通过</button>
+                        {{#  }else if(d.status ==1) {   }}
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn-disabled"><i class="layui-icon layui-icon-ok"></i>已提现</button>
+                        {{#  }else if(d.status ==-1){ }}
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn-disabled" ><i class="layui-icon layui-icon-ok"></i>未通过</button>
+                        {{#  }  }}
                     </script>
 
 
@@ -144,6 +148,9 @@
         })
     });
     layList.form.render();
+
+
+
     layList.tableList('extractLst',"{:Url('extract.extract/get_extract_lst')}", function () {
         return [
             {field: 'id', title: '序号', width:'6%',event:'id'},
@@ -177,14 +184,31 @@
     layList.tool(function (event,data) {
         var layEvent = event;
         switch (layEvent){
-            case 'edit':
-                $eb.createModalFrame('编辑',layList.Url({a:'edit',p:{uid:data.uid}}));
+            // case 'edit':
+            //     $eb.createModalFrame('编辑',layList.Url({a:'edit',p:{uid:data.uid}}));
+            //     break;
+            // case 'see':
+            //     $eb.createModalFrame(data.nickname+'停用',layList.Url({a:'see',p:{uid:data.uid}}));
+            //     break;
+            // case 'del':
+            //     $eb.createModalFrame(data.nickname+'删除',layList.Url({a:'del',p:{uid:data.uid}}));
+            //     break;
+
+            case 'pass':
+                var index = layList.layer.load(0,{ shade: [0.3, '#000']});
+                layList.basePost(layList.Url({c:'extract.extract',a:'set_status'}),{id:data.id,status:1},function (res) {
+                    layList.msg(res.msg);
+                    layList.layer.close(index);
+                    layList.reload();
+                });
                 break;
-            case 'see':
-                $eb.createModalFrame(data.nickname+'停用',layList.Url({a:'see',p:{uid:data.uid}}));
-                break;
-            case 'del':
-                $eb.createModalFrame(data.nickname+'删除',layList.Url({a:'del',p:{uid:data.uid}}));
+            case 'refuse':
+                var index = layList.layer.load(0,{ shade: [0.3, '#000']});
+                layList.basePost(layList.Url({c:'extract.extract',a:'set_status'}),{id:data.id,status:-1},function (res) {
+                    layList.msg(res.msg);
+                    layList.layer.close(index);
+                    layList.reload();
+                });
                 break;
         }
     });
