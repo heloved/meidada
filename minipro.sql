@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-08-09 18:44:38
+Date: 2019-08-13 16:38:01
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -591,12 +591,13 @@ CREATE TABLE `eb_extract` (
   KEY `add_time` (`add_time`) USING BTREE,
   KEY `openid` (`uid`) USING BTREE,
   KEY `fail_time` (`fail_time`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='商户提现表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='商户提现表';
 
 -- ----------------------------
 -- Records of eb_extract
 -- ----------------------------
 INSERT INTO `eb_extract` VALUES ('1', '1', '1', '1', 'tx2019080916144346440', '888888888888888', '100.00', null, '0.00', null, null, '1565338483', '0');
+INSERT INTO `eb_extract` VALUES ('2', '1', '1', '1', 'tx2019081210165511781', '888888888888888', '100.00', null, '0.00', null, null, '1565576215', '0');
 
 -- ----------------------------
 -- Table structure for eb_merchant
@@ -627,7 +628,7 @@ CREATE TABLE `eb_merchant` (
 -- ----------------------------
 -- Records of eb_merchant
 -- ----------------------------
-INSERT INTO `eb_merchant` VALUES ('1', '1', '', '', '', '深圳', '渣渣水果店', '123456', '11111', '18612345678', '', '1564969806', '0', '0');
+INSERT INTO `eb_merchant` VALUES ('1', '1', '', '', '', '深圳', '渣渣水果店', '123456', '11111', '18612345678', '', '1564969806', '1', '0');
 
 -- ----------------------------
 -- Table structure for eb_pink
@@ -635,7 +636,8 @@ INSERT INTO `eb_merchant` VALUES ('1', '1', '', '', '', '深圳', '渣渣水果�
 DROP TABLE IF EXISTS `eb_pink`;
 CREATE TABLE `eb_pink` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `uid` int(10) unsigned NOT NULL COMMENT '商户id',
+  `uid` int(10) unsigned NOT NULL COMMENT '商户userid',
+  `sid` int(10) NOT NULL DEFAULT '0' COMMENT '商户id',
   `pname` varchar(255) NOT NULL COMMENT '拼团名称',
   `address` varchar(255) NOT NULL COMMENT '地址',
   `tel` varchar(32) DEFAULT NULL COMMENT '电话',
@@ -656,14 +658,15 @@ CREATE TABLE `eb_pink` (
   `service_tel` varchar(32) NOT NULL COMMENT '客服电话',
   `notice` varchar(255) NOT NULL COMMENT '参团须知',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='拼团活动表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='拼团活动表';
 
 -- ----------------------------
 -- Records of eb_pink
 -- ----------------------------
-INSERT INTO `eb_pink` VALUES ('1', '1', '七夕节', '深圳福田', '18812345678', '100', '6', '20.00', '1565255154', '1567255154', '1', '', '', '', '这里是服务详情', '', '', '测试店', '1565255135', '0755-81234567', '');
-INSERT INTO `eb_pink` VALUES ('2', '1', '中秋节', '深圳市福田区', null, '50', '2', '100.00', '1565332200', '1565532200', '1', '', '\"img_12.jpg,img_22.jpg\"', '\"img_1.jpg,img_2.jpg\"', '服务详情服务详情服务详情服务详情服务详情', '', '拼团说明 2人团', 'AA美容店', '1565330409', '0755-66665555', '参团须知 2人成团 更优惠');
-INSERT INTO `eb_pink` VALUES ('3', '1', '中秋节活动', '深圳市福田区', null, '100', '4', '99.00', '1565332200', '1568001600', '1', '', '\"img_12.jpg,img_22.jpg\"', '\"img_1.jpg,img_2.jpg\"', '服务详情服务详情服务详情服务详情服务详情', '', '拼团说明 4人团', 'AA美容店', '1565330587', '0755-66665555', '参团须知 4人成团 更优惠');
+INSERT INTO `eb_pink` VALUES ('1', '1', '1', '七夕节', '深圳福田', '18812345678', '100', '6', '20.00', '1565255154', '1567255154', '1', '', '', '', '这里是服务详情', '', '', '测试店', '1565255135', '0755-81234567', '');
+INSERT INTO `eb_pink` VALUES ('2', '1', '1', '中秋节', '深圳市福田区', null, '50', '2', '100.00', '1565332200', '1565532200', '1', '', '\"img_12.jpg,img_22.jpg\"', '\"img_1.jpg,img_2.jpg\"', '服务详情服务详情服务详情服务详情服务详情', '', '拼团说明 2人团', 'AA美容店', '1565330409', '0755-66665555', '参团须知 2人成团 更优惠');
+INSERT INTO `eb_pink` VALUES ('3', '1', '1', '中秋节活动', '深圳市福田区', null, '100', '4', '99.00', '1565332200', '1568001600', '1', '', '\"img_12.jpg,img_22.jpg\"', '\"img_1.jpg,img_2.jpg\"', '服务详情服务详情服务详情服务详情服务详情', '', '拼团说明 4人团', 'AA美容店', '1565330587', '0755-66665555', '参团须知 4人成团 更优惠');
+INSERT INTO `eb_pink` VALUES ('4', '1', '1', '中秋节折扣', '深圳市福田区', null, '100', '4', '99.00', '1565332200', '1568001600', '1', '', '\"img_12.jpg,img_22.jpg\"', '\"img_1.jpg,img_2.jpg\"', '服务详情服务详情服务详情服务详情服务详情', '', '拼团说明 4人团', 'AA美容店', '1565575330', '0755-66665555', '参团须知 4人成团 更优惠');
 
 -- ----------------------------
 -- Table structure for eb_pink_order
@@ -687,6 +690,7 @@ CREATE TABLE `eb_pink_order` (
   `code` int(11) NOT NULL COMMENT '核销码',
   `is_shop` tinyint(1) NOT NULL DEFAULT '0' COMMENT '到店情况 0未到店 1已到店',
   `is_tpl` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否发送模板消息0未发送1已发送',
+  `is_refund` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否退款 0未退款 1已退款',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态1进行中2已完成3未完成',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='拼团订单表';
@@ -694,9 +698,9 @@ CREATE TABLE `eb_pink_order` (
 -- ----------------------------
 -- Records of eb_pink_order
 -- ----------------------------
-INSERT INTO `eb_pink_order` VALUES ('1', '1', '1', 'wx2019080814273010001', '1', '1', '100.00', '七夕节', '1', '6', '100.00', '', '1567933534', '0', '0', '0', '0', '1');
-INSERT INTO `eb_pink_order` VALUES ('2', '3', '1', 'wx2019080814273010001', '1', '1', '100.00', '七夕节', '1', '6', '100.00', '', '1567933534', '1', '0', '0', '0', '1');
-INSERT INTO `eb_pink_order` VALUES ('3', '2', '1', 'wx2019080814273010001', '1', '1', '100.00', '七夕节', '1', '6', '100.00', '', '1567933534', '1', '0', '0', '0', '1');
+INSERT INTO `eb_pink_order` VALUES ('1', '1', '1', 'wx2019080814273010001', '1', '1', '100.00', '七夕节', '1', '6', '100.00', '', '1567933534', '0', '0', '1', '0', '0', '1');
+INSERT INTO `eb_pink_order` VALUES ('2', '3', '1', 'wx2019080814273010001', '1', '1', '100.00', '七夕节', '1', '6', '100.00', '', '1567933534', '1', '0', '0', '0', '0', '1');
+INSERT INTO `eb_pink_order` VALUES ('3', '2', '1', 'wx2019080814273010001', '1', '1', '100.00', '七夕节', '1', '6', '100.00', '', '1567933534', '0', '0', '0', '0', '0', '1');
 
 -- ----------------------------
 -- Table structure for eb_routine_access_token
@@ -712,7 +716,7 @@ CREATE TABLE `eb_routine_access_token` (
 -- ----------------------------
 -- Records of eb_routine_access_token
 -- ----------------------------
-INSERT INTO `eb_routine_access_token` VALUES ('1', '24_MNq0esHHjO1BTdmczF0q6qUG3ZN9Y8gXQxNzedv5wI18M5xklhUyM2rHP4pqFZnDcyK9fLXaubHbBzhnyGJn6-X5IQvwR1-nSzkkhdgHHOJlpzbSvpHqhbvo9NEOUWgAFAEKM', '1565242628');
+INSERT INTO `eb_routine_access_token` VALUES ('1', '24_PAU0xYKiBJJFT08xvaBUHSIJw2BeGIerBarGXiDsKI8pqSOwk7caloWQaSPzzUHMWMnLjmXxdLLC_OTZb-pta2jTjygTJVWpIsRqVN7Oc_OjK7VMAOFfMWVyYR27R20dNJLP75rq06RqW58DIHFgAAADCA', '1565586655');
 
 -- ----------------------------
 -- Table structure for eb_routine_form_id
@@ -895,12 +899,14 @@ CREATE TABLE `eb_store_cart` (
   KEY `uid_2` (`uid`,`is_del`) USING BTREE,
   KEY `uid_3` (`uid`,`is_new`) USING BTREE,
   KEY `type` (`type`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='购物车表';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='购物车表';
 
 -- ----------------------------
 -- Records of eb_store_cart
 -- ----------------------------
 INSERT INTO `eb_store_cart` VALUES ('1', '1', 'product', '1', '6af2068e', '1', '1565245605', '1', '0', '1', '0', '0', '0');
+INSERT INTO `eb_store_cart` VALUES ('2', '1', 'product', '4', '', '1', '1565579457', '1', '0', '1', '0', '0', '0');
+INSERT INTO `eb_store_cart` VALUES ('3', '1', 'product', '1', 'a84fff47', '1', '1565579690', '0', '0', '1', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for eb_store_category
@@ -1215,12 +1221,13 @@ CREATE TABLE `eb_store_order` (
   KEY `status` (`status`) USING BTREE,
   KEY `is_del` (`is_del`) USING BTREE,
   KEY `coupon_id` (`coupon_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='订单表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='订单表';
 
 -- ----------------------------
 -- Records of eb_store_order
 -- ----------------------------
 INSERT INTO `eb_store_order` VALUES ('1', 'wx2019080814273010001', '1', '张三', '020-81167888', '广东省 广州市 海珠区 新港中路397号', '[1]', '1', '0.01', '0.00', '0.01', '0.00', '0.00', '0', '0.00', '0', null, 'weixin', '1565245650', '0', '0', null, null, null, null, null, '0.00', null, null, null, '1.00', '0.00', null, '', '0', '3d209b3a0a7e5267058339c45ada9f10', null, '0', '0', '0', '0', '100.00', '0', '0', '1');
+INSERT INTO `eb_store_order` VALUES ('2', 'wx2019081211122910001', '1', '张三', '020-81167888', '广东省 广州市 海珠区 新港中路397号', '[2]', '1', '999.00', '0.00', '999.00', '0.00', '0.00', '0', '0.00', '0', null, 'weixin', '1565579549', '0', '0', null, null, null, null, null, '0.00', null, null, null, '1.00', '0.00', null, '', '0', '334b3d7bc2fbc1ac36beb062c44bdb49', null, '0', '0', '0', '0', '888.00', '0', '0', '1');
 
 -- ----------------------------
 -- Table structure for eb_store_order_cart_info
@@ -1241,6 +1248,7 @@ CREATE TABLE `eb_store_order_cart_info` (
 -- Records of eb_store_order_cart_info
 -- ----------------------------
 INSERT INTO `eb_store_order_cart_info` VALUES ('1', '1', '1', '{\"id\":1,\"uid\":1,\"type\":\"product\",\"product_id\":1,\"product_attr_unique\":\"6af2068e\",\"cart_num\":1,\"add_time\":1565245605,\"is_pay\":0,\"is_del\":0,\"is_new\":1,\"combination_id\":0,\"seckill_id\":0,\"bargain_id\":0,\"productInfo\":{\"id\":1,\"image\":\"http:\\/\\/datong.crmeb.net\\/public\\/uploads\\/attach\\/2019\\/01\\/15\\/5c3dba1366885.jpg\",\"slider_image\":[\"http:\\/\\/datong.crmeb.net\\/public\\/uploads\\/attach\\/2019\\/01\\/15\\/5c3dba1366885.jpg\",\"http:\\/\\/datong.crmeb.net\\/public\\/uploads\\/attach\\/2019\\/01\\/15\\/5c3dba4187461.jpg\",\"http:\\/\\/datong.crmeb.net\\/public\\/uploads\\/attach\\/2019\\/01\\/15\\/5c3db9de2b73a.jpg\"],\"price\":\"0.01\",\"ot_price\":\"1699.00\",\"vip_price\":\"0.00\",\"postage\":\"1.00\",\"mer_id\":0,\"give_integral\":\"1699.00\",\"cate_id\":\"2\",\"sales\":240,\"stock\":586,\"store_name\":\"\\u65e0\\u7ebf\\u5438\\u5c18\\u5668F8 \\u73ab\\u7470\\u91d1\\u793c\\u76d2\\u7248\",\"store_info\":\"\\u3010\\u5e74\\u8d27\\u8282\\u6d3b\\u52a8\\u4ef71699\\u5143\\uff0c\\u9886\\u53d6\\u5438\\u5c18\\u5668\\u4f18\\u60e0\\u5238\\u518d\\u51cf50\\u5143\\uff0c\\u5230\\u624b\\u4ef7\\u4ec51649\\u5143\\u3011\",\"unit_name\":\"\\u4ef6\",\"is_show\":1,\"is_del\":0,\"is_postage\":1,\"cost\":\"100.00\",\"attrInfo\":{\"product_id\":1,\"suk\":\"\\u9ed1\\u8272\",\"stock\":71,\"sales\":128,\"price\":\"0.01\",\"image\":\"http:\\/\\/datong.crmeb.net\\/public\\/uploads\\/attach\\/2019\\/01\\/15\\/5c3dba1366885.jpg\",\"unique\":\"6af2068e\",\"cost\":\"100.00\"}},\"truePrice\":0.01,\"trueStock\":71,\"costPrice\":\"100.00\"}', '6512bd43d9caa6e02c990b0a82652dca');
+INSERT INTO `eb_store_order_cart_info` VALUES ('2', '2', '4', '{\"id\":2,\"uid\":1,\"type\":\"product\",\"product_id\":4,\"product_attr_unique\":\"\",\"cart_num\":1,\"add_time\":1565579457,\"is_pay\":0,\"is_del\":0,\"is_new\":1,\"combination_id\":0,\"seckill_id\":0,\"bargain_id\":0,\"productInfo\":{\"id\":4,\"image\":\"http:\\/\\/datong.crmeb.net\\/public\\/uploads\\/attach\\/2019\\/01\\/15\\/5c3dc23646fff.jpg\",\"slider_image\":[\"http:\\/\\/datong.crmeb.net\\/public\\/uploads\\/attach\\/2019\\/01\\/15\\/5c3dc23646fff.jpg\",\"http:\\/\\/datong.crmeb.net\\/public\\/uploads\\/attach\\/2019\\/01\\/15\\/5c3dc15ba1972.jpg\",\"http:\\/\\/datong.crmeb.net\\/public\\/uploads\\/attach\\/2019\\/01\\/15\\/5c3dc0ef27068.jpg\"],\"price\":\"999.00\",\"ot_price\":\"1599.00\",\"vip_price\":\"0.00\",\"postage\":\"0.00\",\"mer_id\":0,\"give_integral\":\"999.00\",\"cate_id\":\"3\",\"sales\":82,\"stock\":418,\"store_name\":\"\\u4e92\\u8054\\u7f51\\u7535\\u70ed\\u6c34\\u56681A\",\"store_info\":\"3000w\\u53cc\\u7ba1\\u901f\\u70ed\\uff0c\\u52a8\\u6001360L\\u70ed\\u6c34\\u7528\\u91cf\\uff0c\\u53cc\\u91cd\\u6f0f\\u7535\\u4fdd\\u62a4\\uff0c\\u667a\\u80fdAPP\\u64cd\\u63a7\",\"unit_name\":\"\\u4ef6\",\"is_show\":1,\"is_del\":0,\"is_postage\":1,\"cost\":\"888.00\"},\"truePrice\":999,\"trueStock\":418,\"costPrice\":\"888.00\"}', 'b6d767d2f8ed5d21a44b0e5886680cb9');
 
 -- ----------------------------
 -- Table structure for eb_store_order_status
@@ -1259,6 +1267,7 @@ CREATE TABLE `eb_store_order_status` (
 -- Records of eb_store_order_status
 -- ----------------------------
 INSERT INTO `eb_store_order_status` VALUES ('1', 'cache_key_create_order', '订单生成', '1565245650');
+INSERT INTO `eb_store_order_status` VALUES ('2', 'cache_key_create_order', '订单生成', '1565579549');
 
 -- ----------------------------
 -- Table structure for eb_store_pink
@@ -1661,13 +1670,14 @@ CREATE TABLE `eb_store_visit` (
   `content` varchar(255) DEFAULT NULL COMMENT '备注描述',
   `add_time` int(11) DEFAULT NULL COMMENT '添加时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='产品浏览分析表';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='产品浏览分析表';
 
 -- ----------------------------
 -- Records of eb_store_visit
 -- ----------------------------
 INSERT INTO `eb_store_visit` VALUES ('1', '3', null, '3', 'viwe', '1', '1', '', '1565235425');
-INSERT INTO `eb_store_visit` VALUES ('2', '1', null, '2', 'viwe', '1', '3', '', '1565245597');
+INSERT INTO `eb_store_visit` VALUES ('2', '1', null, '2', 'viwe', '1', '4', '', '1565579680');
+INSERT INTO `eb_store_visit` VALUES ('3', '4', null, '3', 'viwe', '1', '1', '', '1565579455');
 
 -- ----------------------------
 -- Table structure for eb_system_admin
@@ -2012,7 +2022,7 @@ CREATE TABLE `eb_system_log` (
   KEY `admin_id` (`admin_id`) USING BTREE,
   KEY `add_time` (`add_time`) USING BTREE,
   KEY `type` (`type`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=456 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='管理员操作记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=574 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='管理员操作记录表';
 
 -- ----------------------------
 -- Records of eb_system_log
@@ -2472,6 +2482,124 @@ INSERT INTO `eb_system_log` VALUES ('452', '1', 'admin', 'admin/user.user/get_us
 INSERT INTO `eb_system_log` VALUES ('453', '1', 'admin', 'admin/user.user/{{d.avatar}}/', '未知', 'GET', '127.0.0.1', 'system', '1565342570', '0');
 INSERT INTO `eb_system_log` VALUES ('454', '1', 'admin', 'admin/pink/index/', '拼团列表', 'GET', '127.0.0.1', 'system', '1565342578', '0');
 INSERT INTO `eb_system_log` VALUES ('455', '1', 'admin', 'admin/pink/index/', '拼团列表', 'GET', '127.0.0.1', 'system', '1565347214', '0');
+INSERT INTO `eb_system_log` VALUES ('456', '1', 'admin', 'admin/merchant/index/', '商户列表', 'GET', '127.0.0.1', 'system', '1565575039', '0');
+INSERT INTO `eb_system_log` VALUES ('457', '1', 'admin', 'admin/merchant.merchant/get_user_list/', '未知', 'GET', '127.0.0.1', 'system', '1565575039', '0');
+INSERT INTO `eb_system_log` VALUES ('458', '1', 'admin', 'admin/merchant.merchant/add/', '未知', 'GET', '127.0.0.1', 'system', '1565575042', '0');
+INSERT INTO `eb_system_log` VALUES ('459', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575079', '0');
+INSERT INTO `eb_system_log` VALUES ('460', '1', 'admin', 'admin/merchant.merchant/get_user_list/', '未知', 'GET', '127.0.0.1', 'system', '1565575079', '0');
+INSERT INTO `eb_system_log` VALUES ('461', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575081', '0');
+INSERT INTO `eb_system_log` VALUES ('462', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575083', '0');
+INSERT INTO `eb_system_log` VALUES ('463', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575084', '0');
+INSERT INTO `eb_system_log` VALUES ('464', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575085', '0');
+INSERT INTO `eb_system_log` VALUES ('465', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575085', '0');
+INSERT INTO `eb_system_log` VALUES ('466', '1', 'admin', 'admin/merchant/index/', '商户列表', 'GET', '127.0.0.1', 'system', '1565575093', '0');
+INSERT INTO `eb_system_log` VALUES ('467', '1', 'admin', 'admin/merchant.merchant/get_user_list/', '未知', 'GET', '127.0.0.1', 'system', '1565575093', '0');
+INSERT INTO `eb_system_log` VALUES ('468', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575094', '0');
+INSERT INTO `eb_system_log` VALUES ('469', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575095', '0');
+INSERT INTO `eb_system_log` VALUES ('470', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575096', '0');
+INSERT INTO `eb_system_log` VALUES ('471', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575096', '0');
+INSERT INTO `eb_system_log` VALUES ('472', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575096', '0');
+INSERT INTO `eb_system_log` VALUES ('473', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575096', '0');
+INSERT INTO `eb_system_log` VALUES ('474', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575096', '0');
+INSERT INTO `eb_system_log` VALUES ('475', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575097', '0');
+INSERT INTO `eb_system_log` VALUES ('476', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575097', '0');
+INSERT INTO `eb_system_log` VALUES ('477', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575097', '0');
+INSERT INTO `eb_system_log` VALUES ('478', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575097', '0');
+INSERT INTO `eb_system_log` VALUES ('479', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575097', '0');
+INSERT INTO `eb_system_log` VALUES ('480', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575098', '0');
+INSERT INTO `eb_system_log` VALUES ('481', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575098', '0');
+INSERT INTO `eb_system_log` VALUES ('482', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575098', '0');
+INSERT INTO `eb_system_log` VALUES ('483', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575098', '0');
+INSERT INTO `eb_system_log` VALUES ('484', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575102', '0');
+INSERT INTO `eb_system_log` VALUES ('485', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575103', '0');
+INSERT INTO `eb_system_log` VALUES ('486', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575103', '0');
+INSERT INTO `eb_system_log` VALUES ('487', '1', 'admin', 'admin/merchant.merchant/changestatus/', '未知', 'POST', '127.0.0.1', 'system', '1565575103', '0');
+INSERT INTO `eb_system_log` VALUES ('488', '1', 'admin', 'admin/pink/index/', '拼团列表', 'GET', '127.0.0.1', 'system', '1565575105', '0');
+INSERT INTO `eb_system_log` VALUES ('489', '1', 'admin', 'admin/pink/index/', '拼团列表', 'GET', '127.0.0.1', 'system', '1565575115', '0');
+INSERT INTO `eb_system_log` VALUES ('490', '1', 'admin', 'admin/extract.extract/index/', '提现列表', 'GET', '127.0.0.1', 'system', '1565575118', '0');
+INSERT INTO `eb_system_log` VALUES ('491', '1', 'admin', 'admin/exract.extract/get_extract_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565575119', '0');
+INSERT INTO `eb_system_log` VALUES ('492', '1', 'admin', 'admin/setting.systemmenus/index/', '菜单管理展示页', 'GET', '127.0.0.1', 'system', '1565575137', '0');
+INSERT INTO `eb_system_log` VALUES ('493', '1', 'admin', 'admin/setting.systemadmin/index/', '管理员列表展示页', 'GET', '127.0.0.1', 'system', '1565575142', '0');
+INSERT INTO `eb_system_log` VALUES ('494', '1', 'admin', 'admin/setting.systemrole/index/', '身份管理展示页', 'GET', '127.0.0.1', 'system', '1565575143', '0');
+INSERT INTO `eb_system_log` VALUES ('495', '1', 'admin', 'admin/setting.systemconfig/index/', '配置列表展示页', 'GET', '127.0.0.1', 'system', '1565575147', '0');
+INSERT INTO `eb_system_log` VALUES ('496', '1', 'admin', 'admin/setting.systemrole/edit/id/2', '修改身份', 'GET', '127.0.0.1', 'system', '1565575151', '0');
+INSERT INTO `eb_system_log` VALUES ('497', '1', 'admin', 'admin/setting.systemrole/update/id/2', '提交修改身份', 'POST', '127.0.0.1', 'system', '1565575156', '0');
+INSERT INTO `eb_system_log` VALUES ('498', '1', 'admin', 'admin/setting.systemrole/index/', '身份管理展示页', 'GET', '127.0.0.1', 'system', '1565575166', '0');
+INSERT INTO `eb_system_log` VALUES ('499', '1', 'admin', 'admin/merchant/index/', '商户列表', 'GET', '127.0.0.1', 'system', '1565597691', '0');
+INSERT INTO `eb_system_log` VALUES ('500', '1', 'admin', 'admin/merchant.merchant/get_user_list/', '未知', 'GET', '127.0.0.1', 'system', '1565597691', '0');
+INSERT INTO `eb_system_log` VALUES ('501', '1', 'admin', 'admin/extract.extract/index/', '提现列表', 'GET', '127.0.0.1', 'system', '1565597706', '0');
+INSERT INTO `eb_system_log` VALUES ('502', '1', 'admin', 'admin/exract.extract/get_extract_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565597707', '0');
+INSERT INTO `eb_system_log` VALUES ('503', '1', 'admin', 'admin/extract.extract/index/', '提现列表', 'GET', '127.0.0.1', 'system', '1565598444', '0');
+INSERT INTO `eb_system_log` VALUES ('504', '1', 'admin', 'admin/exract.extract/get_extract_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565598444', '0');
+INSERT INTO `eb_system_log` VALUES ('505', '1', 'admin', 'admin/exract.extract/get_extract_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565599038', '0');
+INSERT INTO `eb_system_log` VALUES ('506', '1', 'admin', 'admin/setting.systemmenus/index/', '菜单管理展示页', 'GET', '127.0.0.1', 'system', '1565599246', '0');
+INSERT INTO `eb_system_log` VALUES ('507', '1', 'admin', 'admin/setting.systemmenus/create/cid/474', '添加菜单', 'GET', '127.0.0.1', 'system', '1565599249', '0');
+INSERT INTO `eb_system_log` VALUES ('508', '1', 'admin', 'admin/setting.systemmenus/save/', '添加提交菜单', 'POST', '127.0.0.1', 'system', '1565599297', '0');
+INSERT INTO `eb_system_log` VALUES ('509', '1', 'admin', 'admin/setting.systemmenus/index/', '菜单管理展示页', 'GET', '127.0.0.1', 'system', '1565599297', '0');
+INSERT INTO `eb_system_log` VALUES ('510', '1', 'admin', 'admin/setting.systemmenus/save/', '添加提交菜单', 'POST', '127.0.0.1', 'system', '1565599309', '0');
+INSERT INTO `eb_system_log` VALUES ('511', '1', 'admin', 'admin/setting.systemmenus/index/', '菜单管理展示页', 'GET', '127.0.0.1', 'system', '1565599310', '0');
+INSERT INTO `eb_system_log` VALUES ('512', '1', 'admin', 'admin/extract/unprocessed/', '未处理', 'GET', '127.0.0.1', 'system', '1565599315', '0');
+INSERT INTO `eb_system_log` VALUES ('513', '1', 'admin', 'admin/extract/processed/', '已处理', 'GET', '127.0.0.1', 'system', '1565599318', '0');
+INSERT INTO `eb_system_log` VALUES ('514', '1', 'admin', 'admin/extract.extract/index/', '提现列表', 'GET', '127.0.0.1', 'system', '1565599432', '0');
+INSERT INTO `eb_system_log` VALUES ('515', '1', 'admin', 'admin/exract.extract/get_extract_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565599433', '0');
+INSERT INTO `eb_system_log` VALUES ('516', '1', 'admin', 'admin/extract/unprocessed/', '未知', 'GET', '127.0.0.1', 'system', '1565599433', '0');
+INSERT INTO `eb_system_log` VALUES ('517', '1', 'admin', 'admin/extract.extract/unprocessed/', '未处理', 'GET', '127.0.0.1', 'system', '1565599436', '0');
+INSERT INTO `eb_system_log` VALUES ('518', '1', 'admin', 'admin/extract.extract/index/', '提现列表', 'GET', '127.0.0.1', 'system', '1565599444', '0');
+INSERT INTO `eb_system_log` VALUES ('519', '1', 'admin', 'admin/exract.extract/get_extract_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565599445', '0');
+INSERT INTO `eb_system_log` VALUES ('520', '1', 'admin', 'admin/extract.extract/unprocessed/', '未处理', 'GET', '127.0.0.1', 'system', '1565599481', '0');
+INSERT INTO `eb_system_log` VALUES ('521', '1', 'admin', 'admin/extract.extract/processed/', '已处理', 'GET', '127.0.0.1', 'system', '1565599482', '0');
+INSERT INTO `eb_system_log` VALUES ('522', '1', 'admin', 'admin/extract.extract/index/', '提现列表', 'GET', '127.0.0.1', 'system', '1565599490', '0');
+INSERT INTO `eb_system_log` VALUES ('523', '1', 'admin', 'admin/exract.extract/get_extract_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565599490', '0');
+INSERT INTO `eb_system_log` VALUES ('524', '1', 'admin', 'admin/extract.extract/index/', '提现列表', 'GET', '127.0.0.1', 'system', '1565599521', '0');
+INSERT INTO `eb_system_log` VALUES ('525', '1', 'admin', 'admin/extract.extract/get_extract_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565599521', '0');
+INSERT INTO `eb_system_log` VALUES ('526', '1', 'admin', 'admin/extract.extract/index/', '提现列表', 'GET', '127.0.0.1', 'system', '1565599552', '0');
+INSERT INTO `eb_system_log` VALUES ('527', '1', 'admin', 'admin/extract.extract/get_extract_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565599552', '0');
+INSERT INTO `eb_system_log` VALUES ('528', '1', 'admin', 'admin/extract.extract/index/', '提现列表', 'GET', '127.0.0.1', 'system', '1565599555', '0');
+INSERT INTO `eb_system_log` VALUES ('529', '1', 'admin', 'admin/extract.extract/get_extract_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565599555', '0');
+INSERT INTO `eb_system_log` VALUES ('530', '1', 'admin', 'admin/extract.extract/index/', '提现列表', 'GET', '127.0.0.1', 'system', '1565599601', '0');
+INSERT INTO `eb_system_log` VALUES ('531', '1', 'admin', 'admin/extract.extract/get_extract_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565599601', '0');
+INSERT INTO `eb_system_log` VALUES ('532', '1', 'admin', 'admin/extract.extract/unprocessed/', '未处理', 'GET', '127.0.0.1', 'system', '1565599603', '0');
+INSERT INTO `eb_system_log` VALUES ('533', '1', 'admin', 'admin/extract.extract/get_unprocessed_list/', '未知', 'GET', '127.0.0.1', 'system', '1565599603', '0');
+INSERT INTO `eb_system_log` VALUES ('534', '1', 'admin', 'admin/extract.extract/processed/', '已处理', 'GET', '127.0.0.1', 'system', '1565599604', '0');
+INSERT INTO `eb_system_log` VALUES ('535', '1', 'admin', 'admin/extract.extract/get_processed_list/', '未知', 'GET', '127.0.0.1', 'system', '1565599604', '0');
+INSERT INTO `eb_system_log` VALUES ('536', '1', 'admin', 'admin/extract.extract/unprocessed/', '未处理', 'GET', '127.0.0.1', 'system', '1565599651', '0');
+INSERT INTO `eb_system_log` VALUES ('537', '1', 'admin', 'admin/extract.extract/get_unprocessed_list/', '未知', 'GET', '127.0.0.1', 'system', '1565599651', '0');
+INSERT INTO `eb_system_log` VALUES ('538', '1', 'admin', 'admin/extract.extract/index/', '提现列表', 'GET', '127.0.0.1', 'system', '1565599681', '0');
+INSERT INTO `eb_system_log` VALUES ('539', '1', 'admin', 'admin/extract.extract/get_extract_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565599681', '0');
+INSERT INTO `eb_system_log` VALUES ('540', '1', 'admin', 'admin/extract.extract/unprocessed/', '未处理', 'GET', '127.0.0.1', 'system', '1565599683', '0');
+INSERT INTO `eb_system_log` VALUES ('541', '1', 'admin', 'admin/extract.extract/get_unprocessed_list/', '未知', 'GET', '127.0.0.1', 'system', '1565599684', '0');
+INSERT INTO `eb_system_log` VALUES ('542', '1', 'admin', 'admin/extract.extract/processed/', '已处理', 'GET', '127.0.0.1', 'system', '1565599688', '0');
+INSERT INTO `eb_system_log` VALUES ('543', '1', 'admin', 'admin/extract.extract/get_processed_list/', '未知', 'GET', '127.0.0.1', 'system', '1565599688', '0');
+INSERT INTO `eb_system_log` VALUES ('544', '1', 'admin', 'admin/pink/index/', '拼团列表', 'GET', '127.0.0.1', 'system', '1565601861', '0');
+INSERT INTO `eb_system_log` VALUES ('545', '1', 'admin', 'admin/setting.systemmenus/index/', '菜单管理展示页', 'GET', '127.0.0.1', 'system', '1565601876', '0');
+INSERT INTO `eb_system_log` VALUES ('546', '1', 'admin', 'admin/setting.systemmenus/index/pid/477', '菜单管理展示页', 'GET', '127.0.0.1', 'system', '1565601889', '0');
+INSERT INTO `eb_system_log` VALUES ('547', '1', 'admin', 'admin/setting.systemmenus/index/pid/477', '菜单管理展示页', 'GET', '127.0.0.1', 'system', '1565601890', '0');
+INSERT INTO `eb_system_log` VALUES ('548', '1', 'admin', 'admin/setting.systemmenus/index/pid/477', '菜单管理展示页', 'GET', '127.0.0.1', 'system', '1565601891', '0');
+INSERT INTO `eb_system_log` VALUES ('549', '1', 'admin', 'admin/setting.systemmenus/edit/id/478', '编辑菜单', 'GET', '127.0.0.1', 'system', '1565601897', '0');
+INSERT INTO `eb_system_log` VALUES ('550', '1', 'admin', 'admin/setting.systemmenus/update/id/478', '编辑提交菜单', 'POST', '127.0.0.1', 'system', '1565601907', '0');
+INSERT INTO `eb_system_log` VALUES ('551', '1', 'admin', 'admin/setting.systemmenus/index/pid/477', '菜单管理展示页', 'GET', '127.0.0.1', 'system', '1565601908', '0');
+INSERT INTO `eb_system_log` VALUES ('552', '1', 'admin', 'admin/system.clear/index/', '刷新缓存', 'GET', '127.0.0.1', 'system', '1565601914', '0');
+INSERT INTO `eb_system_log` VALUES ('553', '1', 'admin', 'admin/system.clear/delete_cache/', '未知', 'GET', '127.0.0.1', 'system', '1565601921', '0');
+INSERT INTO `eb_system_log` VALUES ('554', '1', 'admin', 'admin/pink.pink/index/', '拼团列表', 'GET', '127.0.0.1', 'system', '1565601925', '0');
+INSERT INTO `eb_system_log` VALUES ('555', '1', 'admin', 'admin/pink.pink/get_pink_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565601926', '0');
+INSERT INTO `eb_system_log` VALUES ('556', '1', 'admin', 'admin/pink.pink/index/', '拼团列表', 'GET', '127.0.0.1', 'system', '1565602049', '0');
+INSERT INTO `eb_system_log` VALUES ('557', '1', 'admin', 'admin/pink.pink/get_pink_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565602050', '0');
+INSERT INTO `eb_system_log` VALUES ('558', '1', 'admin', 'admin/pink.pink/index/', '拼团列表', 'GET', '127.0.0.1', 'system', '1565602534', '0');
+INSERT INTO `eb_system_log` VALUES ('559', '1', 'admin', 'admin/pink.pink/get_pink_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565602536', '0');
+INSERT INTO `eb_system_log` VALUES ('560', '1', 'admin', 'admin/pink.pink/index/', '拼团列表', 'GET', '127.0.0.1', 'system', '1565602545', '0');
+INSERT INTO `eb_system_log` VALUES ('561', '1', 'admin', 'admin/pink.pink/get_pink_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565602547', '0');
+INSERT INTO `eb_system_log` VALUES ('562', '1', 'admin', 'admin/pink.pink/index/', '拼团列表', 'GET', '127.0.0.1', 'system', '1565602600', '0');
+INSERT INTO `eb_system_log` VALUES ('563', '1', 'admin', 'admin/pink.pink/get_pink_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565602602', '0');
+INSERT INTO `eb_system_log` VALUES ('564', '1', 'admin', 'admin/merchant/index/', '商户列表', 'GET', '127.0.0.1', 'system', '1565669086', '0');
+INSERT INTO `eb_system_log` VALUES ('565', '1', 'admin', 'admin/merchant.merchant/get_user_list/', '未知', 'GET', '127.0.0.1', 'system', '1565669087', '0');
+INSERT INTO `eb_system_log` VALUES ('566', '1', 'admin', 'admin/pink.pink/index/', '拼团列表', 'GET', '127.0.0.1', 'system', '1565669098', '0');
+INSERT INTO `eb_system_log` VALUES ('567', '1', 'admin', 'admin/pink.pink/get_pink_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565669099', '0');
+INSERT INTO `eb_system_log` VALUES ('568', '1', 'admin', 'admin/extract.extract/processed/', '已处理', 'GET', '127.0.0.1', 'system', '1565685285', '0');
+INSERT INTO `eb_system_log` VALUES ('569', '1', 'admin', 'admin/extract.extract/get_processed_list/', '未知', 'GET', '127.0.0.1', 'system', '1565685286', '0');
+INSERT INTO `eb_system_log` VALUES ('570', '1', 'admin', 'admin/pink.pink/index/', '拼团列表', 'GET', '127.0.0.1', 'system', '1565685290', '0');
+INSERT INTO `eb_system_log` VALUES ('571', '1', 'admin', 'admin/pink.pink/get_pink_lst/', '未知', 'GET', '127.0.0.1', 'system', '1565685291', '0');
+INSERT INTO `eb_system_log` VALUES ('572', '1', 'admin', 'admin/extract.extract/unprocessed/', '未处理', 'GET', '127.0.0.1', 'system', '1565685306', '0');
+INSERT INTO `eb_system_log` VALUES ('573', '1', 'admin', 'admin/extract.extract/get_unprocessed_list/', '未知', 'GET', '127.0.0.1', 'system', '1565685307', '0');
 
 -- ----------------------------
 -- Table structure for eb_system_menus
@@ -2493,7 +2621,7 @@ CREATE TABLE `eb_system_menus` (
   KEY `pid` (`pid`) USING BTREE,
   KEY `is_show` (`is_show`) USING BTREE,
   KEY `access` (`access`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=479 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=481 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='菜单表';
 
 -- ----------------------------
 -- Records of eb_system_menus
@@ -2582,7 +2710,6 @@ INSERT INTO `eb_system_menus` VALUES ('147', '24', '', '产品管理附加权限
 INSERT INTO `eb_system_menus` VALUES ('148', '286', '', '优惠券', '', '', '', '[]', '10', '0', '1');
 INSERT INTO `eb_system_menus` VALUES ('149', '148', '', '优惠券制作', 'admin', 'ump.storeCoupon', 'index', '[]', '5', '0', '1');
 INSERT INTO `eb_system_menus` VALUES ('150', '148', '', '会员领取记录', 'admin', 'ump.storeCouponUser', 'index', '[]', '1', '0', '1');
-INSERT INTO `eb_system_menus` VALUES ('151', '0', 'user', '会员', 'admin', 'user', 'index', '[]', '107', '1', '1');
 INSERT INTO `eb_system_menus` VALUES ('153', '289', '', '管理权限', 'admin', 'setting.systemAdmin', '', '[]', '100', '1', '1');
 INSERT INTO `eb_system_menus` VALUES ('155', '154', '', '商户产品展示页', 'admin', 'store.storeMerchant', 'index', '[]', '0', '0', '1');
 INSERT INTO `eb_system_menus` VALUES ('156', '154', '', '商户产品附加权限', 'admin', 'store.storeMerchant', '', '[]', '0', '0', '1');
@@ -2750,7 +2877,9 @@ INSERT INTO `eb_system_menus` VALUES ('473', '472', '', '商户列表', 'admin',
 INSERT INTO `eb_system_menus` VALUES ('474', '0', 'money', '提现管理', 'admin', 'extract', 'index', '[]', '106', '1', '1');
 INSERT INTO `eb_system_menus` VALUES ('476', '474', '', '提现列表', 'admin', 'extract.extract', 'index', '[]', '0', '1', '1');
 INSERT INTO `eb_system_menus` VALUES ('477', '0', 'th-large', '拼团管理', 'admin', 'pink', 'index', '[]', '103', '1', '1');
-INSERT INTO `eb_system_menus` VALUES ('478', '477', '', '拼团列表', 'admin', 'pink', 'index', '[]', '0', '1', '1');
+INSERT INTO `eb_system_menus` VALUES ('478', '477', '', '拼团列表', 'admin', 'pink.pink', 'index', '[]', '0', '1', '1');
+INSERT INTO `eb_system_menus` VALUES ('479', '474', '', '未处理', 'admin', 'extract.extract', 'unprocessed', '[]', '0', '1', '1');
+INSERT INTO `eb_system_menus` VALUES ('480', '474', '', '已处理', 'admin', 'extract.extract', 'processed', '[]', '0', '1', '1');
 
 -- ----------------------------
 -- Table structure for eb_system_notice
@@ -2821,7 +2950,7 @@ CREATE TABLE `eb_system_role` (
 -- Records of eb_system_role
 -- ----------------------------
 INSERT INTO `eb_system_role` VALUES ('1', '超级管理员', '23,24,147,266,265,264,263,262,261,146,25,142,143,369,370,285,26,191,394,208,207,206,205,204,203,202,201,200,199,198,197,196,195,194,193,192,190,329,334,335,290,170,225,228,227,226,224,151,177,399,402,403,405,406,407,401,400,398,176,408,413,412,411,409,410,449,337,353,371,415,450,286,148,149,230,234,233,232,231,229,235,150,352,271,254,366,367,368,272,238,333,273,241,349,351,350,287,306,239,307,179,216,217,218,219,312,308,313,288,293,340,341,296,318,317,316,315,314,294,302,244,301,300,295,303,304,305,246,374,297,321,320,319,269,372,270,373,375,376,422,423,424,425,426,427,451,11,360,267,17,127,128,126,174,416,417,418,419,420,421,452,361,355,359,358,356,357,354,12,97,98,99,30,93,89,92,91,90,124,123,31,95,96,94,37,175,210,215,214,213,212,211,223,222,209,19,73,42,116,115,45,44,43,82,133,134,395,396,397,84,236,129,132,289,378,153,8,67,63,105,104,66,65,64,4,68,59,103,102,62,61,60,2,78,74,77,76,75,101,100,247,250,248,249,1,6,118,117,119,145,144,7,46,108,107,106,50,49,48,47,51,69,9,70,52,112,111,110,109,58,57,56,55,54,53,255,80,283,72,38,41,40,39,284,71,33,114,113,36,35,34,21,173,252,237,278,130,131,377,447,439,445,446,444,443,440,441,442,276,362,364,363,365,390,393,392,389,388,386,387,453,379,448,380,381,382,0', '0', '1');
-INSERT INTO `eb_system_role` VALUES ('2', 'test', '151,177,399,400,407,406,405,403,402,401,398,474,476,472,473,477,478,21,237,0', '1', '1');
+INSERT INTO `eb_system_role` VALUES ('2', 'test', '474,476,472,473,477,478,21,237,0', '1', '1');
 
 -- ----------------------------
 -- Table structure for eb_system_user_level
@@ -2946,7 +3075,7 @@ CREATE TABLE `eb_user` (
 -- ----------------------------
 -- Records of eb_user
 -- ----------------------------
-INSERT INTO `eb_user` VALUES ('1', 'rt11564829206', 'e10adc3949ba59abbe56e057f20f883e', 'Mr、Hu', 'https://wx.qlogo.cn/mmopen/vi_32/50DwZgyicl9cO0fE5uosPn81bDwnjrMEXDd2JDxWZFvyrA4rvEr4SzLicl3NPPiaQGric9mkuiaKuxthvVKibDQJldicg/132', null, '1564829206', '127.0.0.1', '1565320181', '127.0.0.1', '0.00', '0.00', '0', '1', '0', '0', '0', 'routine', '0', '0', '0');
+INSERT INTO `eb_user` VALUES ('1', 'rt11564829206', 'e10adc3949ba59abbe56e057f20f883e', 'Mr、Hu', 'https://wx.qlogo.cn/mmopen/vi_32/50DwZgyicl9cO0fE5uosPn81bDwnjrMEXDd2JDxWZFvyrA4rvEr4SzLicl3NPPiaQGric9mkuiaKuxthvVKibDQJldicg/132', null, '1564829206', '127.0.0.1', '1565578044', '127.0.0.1', '0.00', '0.00', '0', '1', '0', '0', '0', 'routine', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for eb_user_address
@@ -3254,4 +3383,4 @@ CREATE TABLE `eb_wechat_user` (
 -- ----------------------------
 -- Records of eb_wechat_user
 -- ----------------------------
-INSERT INTO `eb_wechat_user` VALUES ('1', '', null, 'oRzsS1fjkW5No9fLqP8HbvU4oh9o', 'Mr、Hu', 'https://wx.qlogo.cn/mmopen/vi_32/50DwZgyicl9cO0fE5uosPn81bDwnjrMEXDd2JDxWZFvyrA4rvEr4SzLicl3NPPiaQGric9mkuiaKuxthvVKibDQJldicg/132', '1', '深圳', 'zh_CN', '广东', '中国', null, '0', null, '1', null, '1564829206', null, null, null, null, null, 'Opt1DgGNIHSj2KRQuZXdeQ==', 'routine');
+INSERT INTO `eb_wechat_user` VALUES ('1', '', null, 'oRzsS1fjkW5No9fLqP8HbvU4oh9o', 'Mr、Hu', 'https://wx.qlogo.cn/mmopen/vi_32/50DwZgyicl9cO0fE5uosPn81bDwnjrMEXDd2JDxWZFvyrA4rvEr4SzLicl3NPPiaQGric9mkuiaKuxthvVKibDQJldicg/132', '1', '深圳', 'zh_CN', '广东', '中国', null, '0', null, '1', null, '1564829206', null, null, null, null, null, 'MCc3ccWdrU96Bi48NqLXxw==', 'routine');
