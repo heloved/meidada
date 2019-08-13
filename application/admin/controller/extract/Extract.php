@@ -46,26 +46,23 @@ class Extract extends AuthController
     }
 
     /**
+     * 提现列表
      * @return json
      */
     public function get_extract_lst(Request $request){
         $data = $request->param();
-
 
         //获取每页显示的条数
         $limit= $data['limit'];
         //获取当前页数
         $page= $data['page'];
 
-        $where =[];
-        if(isset($data['status'])&& !empty($data['status'])){
-            $where['status']=$data['status'];
-        }
-        $count= DB::name('extract')->where($where)->field('*')->count();
+        
+        $count= DB::name('extract')->field('*')->count();
         //计算出从那条开始查询
         $tol=($page-1)*$limit;
 
-       $list = DB::name('extract')->where($where)->field('*')->limit($tol, $limit)->select();
+       $list = DB::name('extract')->field('*')->limit($tol, $limit)->select();
         foreach ($list as $k=>$v){
             $list[$k]['merchant_name']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('merchant_name');
             $list[$k]['account']= Db::name('merchant')->where(['uid'=>$v['uid']])->value('account');
@@ -200,11 +197,10 @@ class Extract extends AuthController
 
 
 
-     /**
-     * 显示后台管理员添加的图文
-     * @return mixed
+    /**
+     * 弹框 190813
      */
-    public function index_alert($pid = 0)
+    public function index_alert()
     {
 
         $field = 'id,uid, bank_code, extract_price, add_time';
