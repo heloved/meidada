@@ -14,6 +14,28 @@
     <link href="{__FRAME_PATH}css/font-awesome.min.css" rel="stylesheet">
     <link href="{__FRAME_PATH}css/animate.min.css" rel="stylesheet">
     <link href="{__FRAME_PATH}css/style.min.css" rel="stylesheet">
+    <style>
+        .roll-right.J_tabFullScreen {
+            right: 40px;
+        }
+        .roll-right.J_tabRefresh {
+            right: 80px;
+        }
+        .roll-right.J_tabReply {
+            right: 120px;
+        }
+        .roll-right.btn-group {
+            right: 161px;
+        }
+        .roll-right.J_tabRight {
+            right: 210px;
+        }
+        .roll-right.J_tabLeft {
+            right: 250px;
+        }
+
+
+    </style>
 </head>
 <body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
 <div id="wrapper">
@@ -89,41 +111,8 @@
             <a href="javascript:void(0);" class="roll-nav roll-right J_tabReply" title="返回"><i class="fa fa-reply"></i> </a>
             <a href="javascript:void(0);" class="roll-nav roll-right J_tabRefresh" title="刷新"><i class="fa fa-refresh"></i> </a>
             <a href="javascript:void(0);" class="roll-nav roll-right J_tabFullScreen" title="全屏"><i class="fa fa-arrows"></i> </a>
-            <a href="javascript:void(0);" class="roll-nav roll-right J_notice" data-toggle="dropdown" aria-expanded="true" title="消息"><i class="fa fa-bell"></i> <span class="badge badge-danger" id="msgcount">0</span></a>
-            <ul class="dropdown-menu dropdown-alerts dropdown-menu-right" >
-                <li>
-                    <a class="J_menuItem" href="{:Url('order.store_order/index')}">
-                        <div>
-                            <i class="fa fa-building-o"></i> 待发货
-                            <span class="pull-right text-muted small" id="ordernum">0个</span>
-                        </div>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a class="J_menuItem" href="{:Url('store.store_product/index',array('type'=>5))}">
-                        <div>
-                            <i class="fa fa-pagelines"></i> 库存预警 <span class="pull-right text-muted small" id="inventory">0个</span>
-                        </div>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a class="J_menuItem" href="{:Url('store.store_product_reply/index')}">
-                        <div>
-                            <i class="fa fa-comments-o"></i> 新评论 <span class="pull-right text-muted small" id="commentnum">0个</span>
-                        </div>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a class="J_menuItem" href="{:Url('finance.user_extract/index')}">
-                        <div>
-                            <i class="fa fa-cny"></i> 申请提现 <span class="pull-right text-muted small" id="reflectnum">0个</span>
-                        </div>
-                    </a>
-                </li>
-            </ul>
+            <!-- <a href="javascript:void(0);" class="roll-nav roll-right J_notice" data-toggle="dropdown" aria-expanded="true" title="消息"><i class="fa fa-bell"></i> <span class="badge badge-danger" id="msgcount">0</span></a> -->
+            
             <a href="javascript:void(0);" class="roll-nav roll-right J_tabSetting right-sidebar-toggle" title="更多"><i class="fa fa-tasks"></i></a>
             <div class="btn-group roll-nav roll-right">
                 <button class="dropdown J_tabClose" data-toggle="dropdown">关闭<span class="caret"></span>
