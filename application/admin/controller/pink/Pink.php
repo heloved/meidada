@@ -70,7 +70,13 @@ class Pink extends AuthController
         }
 
         $res =  Db::name('pink')->where('id',$param['id'])->find();
-        // dump($res);
+        
+        $res['add_time'] = date('Y-m-d H:i:s',$res['add_time']);
+        $res['stop_time'] = date('Y-m-d H:i:s',$res['stop_time']);
+        $res['top_img'] = explode(',',$res['picture']);
+        $res['detail_img'] = explode(',',$res['detail_image']);
+        dump($res);
+
 
         $this->assign('info',$res);
         return $this->fetch();
