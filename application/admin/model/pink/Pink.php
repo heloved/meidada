@@ -36,6 +36,7 @@ class Pink extends ModelBasic
 
             $model = $model -> where('pname', 'LIKE', '%'.$where['pname'].'%');
         }
+       
         // if($where['account'] != ''){
         //  $model = $model->where('account','LIKE','%'.$where['account'].'%');
 
@@ -59,6 +60,7 @@ class Pink extends ModelBasic
         $list =  $model->alias('p')
             ->join('merchant m','p.sid=m.id')
             ->field('p.*,m.account,m.phone,m.merchant_name')
+            ->where('p.status', 'neq', 3)
             ->page((int)$where['page'],(int)$where['limit'])
             ->select()
             ->each(function ($item){
@@ -67,8 +69,9 @@ class Pink extends ModelBasic
                 // $item['create_time']=substr($item['create_time'],0,10);
 
             });//->toArray();
-  
-        $count=self::setWherePage(self::setWhere($where), $field, [])->count();
+        
+        $new_model = self::setWhere($where)->where('status','neq',3);
+        $count=self::setWherePage($new_model, $field, [])->count();
         return ['count'=>$count,'data'=>$list];
     }
 

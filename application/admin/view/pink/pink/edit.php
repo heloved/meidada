@@ -38,7 +38,41 @@
         border: 1px solid #e5e5e5;
     }
     .avatar{width: 50px;height: 50px;}
+
+
+    /* 多图上传 */
+    .layui-upload-img { width: 90px; height: 90px; margin: 0; }
+    .pic-more { width:100%; left; margin: 10px 0px 0px 0px;}
+    .pic-more li { width:90px; float: left; margin-right: 8px;}
+    .pic-more li .layui-input { display: initial; }
+    .pic-more li a { position: absolute; top: 0; display: block; }
+    .pic-more li a i { font-size: 24px; background-color: #008800; }    
+    #slide-pc-priview .item_img img{ width: 90px; height: 90px;}
+    #slide-pc-priview li{position: relative;}
+    #slide-pc-priview li .operate{ color: #000; display: none;}
+    #slide-pc-priview li .toleft{ position: absolute;top: 40px; left: 1px; cursor:pointer;}
+    #slide-pc-priview li .toright{ position: absolute;top: 40px; right: 1px;cursor:pointer;}
+    #slide-pc-priview li .close{position: absolute;top: 5px; right: 5px;cursor:pointer; color:red;font-size:26px;}
+    #slide-pc-priview li:hover .operate{ display: block;}    
+    /* 多图上传 */
+
+    /* 详情图 start */
+    #slide-detail-preview .item_img img{ width: 90px; height: 90px;}
+    #slide-detail-preview li{position: relative;}
+    #slide-detail-preview li .operate{ color: #000; display: none;}
+    #slide-detail-preview li .toleft{ position: absolute;top: 40px; left: 1px; cursor:pointer;}
+    #slide-detail-preview li .toright{ position: absolute;top: 40px; right: 1px;cursor:pointer;}
+    #slide-detail-preview li .close{position: absolute;top: 5px; right: 5px;cursor:pointer; color:red;font-size:26px;}
+    #slide-detail-preview li:hover .operate{ display: block;}    
+    /* 详情图 END */
+
+
+
+
 </style>
+
+
+
 {/block}
 {block name="content"}
 <div class="row">
@@ -46,7 +80,7 @@
         <div class="ibox float-e-margins">
             
             <div class="ibox-title">
-                <h5>编辑商户</h5>
+                <h5>编辑拼团活动</h5>
                 <div class="ibox-tools">
                     <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
@@ -64,30 +98,95 @@
                             <input type="text" name="pname" lay-verify="required" value="{$info.pname}" class="layui-input">
                         </div>
                     </div>
+
                     <div class="layui-form-item">
                         <label class="layui-form-label">拼团开始时间: </label>
                         <div class="layui-input-block">
-                            <input type="text" name="add_time" lay-verify="required" value="{$info.add_time}" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">拼团结束时间: </label>
-                        <div class="layui-input-block">
-                            <input type="text" name="account" lay-verify="required" value="{$info.stop_time}" class="layui-input">
+                            <input type="text" name="add_time" id="start_time" lay-verify="required" value="{$info.add_time}" autocomplete="off" class="layui-input" readonly>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">拼团页面顶部图: </label>
+                        <label class="layui-form-label">拼团结束时间: </label>
                         <div class="layui-input-block">
-                            <input type="text" name="account" lay-verify="required" value="{$info.stop_time}" class="layui-input">
+                            <input type="text" name="stop_time" id="end_time" lay-verify="required" value="{$info.stop_time}" autocomplete="off" class="layui-input" readonly>
                         </div>
                     </div>
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">拼团人数: </label>
+                        <div class="layui-input-block">
+                            <input type="text" name="people" lay-verify="required" value="{$info.people}" class="layui-input">
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">拼团价格: </label>
+                        <div class="layui-input-block">
+                            <input type="text" name="price" lay-verify="required" value="{$info.price}" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item" id="pics">
+                        <div class="layui-form-label">拼团页面顶部图: </div>
+                        <div class="layui-input-block" style="width: 70%;">
+                            <div class="layui-upload">
+                                <button type="button" class="layui-btn layui-btn-sm pull-left" id="slide-pc" style="background-color:#009688">选择多图</button><br/>
+                                <div class="pic-more">
+                                    <ul class="pic-more-upload-list" id="slide-pc-priview">
+                                        {notempty name="$info.top_img"}
+                                        {volist name="$info.top_img" id="vo"}
+
+                                        <li class="item_img">
+                                            <div class="operate">
+                                                <i class="close layui-icon"></i>
+                                            </div>
+                                            <img src="{$vo}" class="img" >
+                                            <input type="hidden" name="picture[]" value="{$vo}" />
+                                        </li>
+
+                                        {/volist}
+                                        {/notempty}
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">服务详情: </label>
                         <div class="layui-input-block">
-                            <input type="text" name="info" lay-verify="required" value="{$info.info}" class="layui-input">
+                            <!-- <input type="text" name="info" lay-verify="required" value="{$info.info}" class="layui-input"> -->
+                            <textarea name="info" placeholder="请输入内容" class="layui-textarea" lay-verify="required">{$info.info}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-form-label"></div>
+                        <div class="layui-input-block" style="width: 70%;">
+                            <div class="layui-upload">
+                                <button type="button" class="layui-btn layui-btn-sm pull-left" id="slide-detail" style="background-color:#009688">选择多图</button><br/>
+                                <div class="pic-more">
+                                    <ul class="pic-more-upload-list" id="slide-detail-preview">
+                                    {notempty name="$info.detail_img"}
+                                        {volist name="$info.detail_img" id="vo"}
+
+                                        <li class="item_img">
+                                            <div class="operate">
+                                                <i class="close layui-icon"></i>
+                                            </div>
+                                            <img src="{$vo}" class="img" >
+                                            <input type="hidden" name="detail_image[]" value="{$vo}" />
+                                        </li>
+
+                                        {/volist}
+                                        {/notempty}
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -115,55 +214,17 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">参团须知: </label>
                         <div class="layui-input-block">
-                            <input type="text" name="notice" lay-verify="required" value="{$info.notice}" class="layui-input">
+                            <!-- <input type="text" name="notice" lay-verify="required" value="{$info.notice}" class="layui-input"> -->
+                            <textarea name="notice" placeholder="请输入内容" class="layui-textarea" lay-verify="required">{$info.notice}</textarea>
                         </div>
                     </div>
 
 
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">地　　区：</label>
-                            <div class="layui-input-inline" style="margin-left:34px;">
-                                <select name="country" lay-verify="country" lay-filter='country'>
-                                    <option value="">请选择国</option>
-                                    <option value="domestic" selected="selected">中国</option>
-                                    <!-- <option value="abroad">外国</option> -->
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                       
-                    <div class="layui-form-item">   
-                        <div class="layui-inline" id="province-div">
-                            <label class="layui-form-label">省　　份：</label>
-                            <div class="layui-input-inline" style="margin-left:34px;">
-                                <select name="province" lay-verify="required|province" lay-filter='province' id="province">
-                                    <option value="{$info.province}" id="province-top" selected="selected">{$info.province}</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="layui-inline" id="city-div">
-                            <label class="layui-form-label">市　　区：</label>
-                            <div class="layui-input-inline" >
-                                <select name="city" lay-verify="required|city"  lay-filter='city' id="city">
-                                    <option value="{$info.city}" id="city-top" selected="selected">{$info.city}</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">详细地址: </label>
-                        <div class="layui-input-block">
-                            <input type="text" name="address" lay-verify="required" value="{$info.address}" class="layui-input">
-                        </div>
-                    </div>
                     <input type="hidden" name="id" value="{$info.id}">
                     <div class="layui-form-item">
                         <div class="layui-input-block">
                             <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit="" lay-filter="submit">
-                                <i class="layui-icon layui-icon-auz layuiadmin-button-btn"></i>提交</button>
+                                <i class="layui-icon layui-icon-auz"></i>提交</button>
                         </div>
                     </div>
                 </form>
@@ -178,133 +239,144 @@
 {/block}
 {block name="script"}
 <script>
-    // $('#province-div').hide();
-    // $('#city-div').hide();
-    layList.select('country',function (odj,value,name) {
-        var html = '';
-        $.each(city,function (index,item) {
-            html += '<option value="'+item.label+'">'+item.label+'</option>';
-        })
-        if(odj.value == 'domestic'){
-            $('#province-div').show();
-            $('#city-div').show();
-            $('#province-top').siblings().remove();
-            $('#province-top').after(html);
-            $('#province').val('');
-            layList.form.render('select');
-        }else{
-            $('#province-div').hide();
-            $('#city-div').hide();
-        }
-        $('#province').val('');
-        $('#city').val('');
-    });
-    layList.select('province',function (odj,value,name) {
-        var html = '';
-        $.each(city,function (index,item) {
-            if(item.label == odj.value){
-                $.each(item.children,function (indexe,iteme) {
-                    html += '<option value="'+iteme.label+'">'+iteme.label+'</option>';
-                })
-                $('#city').val('');
-                $('#city-top').siblings().remove();
-                $('#city-top').after(html);
-                layList.form.render('select');
-            }
-        })
-    });
-    layList.form.render();
- 
+
+    layList.date({elem:'#start_time',theme:'#393D49',type:'datetime'});
+    layList.date({elem:'#end_time',theme:'#393D49',type:'datetime'});
+
     layList.search('submit',function(where){
-
-        var len = Object.keys(where).length;
         
-        if(len){
-            layList.basePost(layList.Url({a:'save'}),where,function (res) {
-                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                 
-                if(res.code == 200){
-                    layList.msg(res.msg);
-                    setTimeout(function () {
-                        parent.layer.close(index); //再执行关闭    
-                    },1000);
-                }else{
-                    layList.msg(res.msg);
-                }
-            });
-        }else{
-            layList.msg('请完善信息后再提交');
-        }
+        layList.basePost(layList.Url({a:'save'}),where,function (res) {
+            layList.msg(res.msg);
+            parent.$(".J_iframe:visible")[0].contentWindow.location.reload();
+            setTimeout(function (e) {
+                parent.layer.close(parent.layer.getFrameIndex(window.name));
+            },800)
 
-
-
-      
+        },function(err){
+            layList.msg(err.msg);
+        });
     });
 
     var action={
-       
-        set_status_f:function () {
-           var ids=layList.getCheckData().getIds('uid');
-           if(ids.length){
-               layList.basePost(layList.Url({a:'set_status',p:{is_echo:1,status:0}}),{uids:ids},function (res) {
-                   layList.msg(res.msg);
-                   layList.reload();
-               });
-           }else{
-               layList.msg('请选择要封禁的会员');
-           }
-        },
-        set_status_j:function () {
-            
-        },
-        set_grant:function () {
-            var ids=layList.getCheckData().getIds('uid');
-            if(ids.length){
-                var str = ids.join(',');
-                $eb.createModalFrame('发送优惠券',layList.Url({c:'ump.store_coupon',a:'grant',p:{id:str}}),{'w':800});
-            }else{
-                layList.msg('请选择要发送优惠券的会员');
-            }
-        },
-        set_template:function () {
-            var ids=layList.getCheckData().getIds('uid');
-            if(ids.length){
-                var str = ids.join(',');
-            }else{
-                layList.msg('请选择要发送模板消息的会员');
-            }
-        },
-        set_info:function () {
-            var ids=layList.getCheckData().getIds('uid');
-            if(ids.length){
-                var str = ids.join(',');
-                $eb.createModalFrame('发送站内信息',layList.Url({c:'user.user_notice',a:'notice',p:{id:str}}),{'w':1200});
-            }else{
-                layList.msg('请选择要发送站内信息的会员');
-            }
-        },
-        set_custom:function () {
-            var ids=layList.getCheckData().getIds('uid');
-            if(ids.length){
-                var str = ids.join(',');
-                $eb.createModalFrame('发送客服图文消息',layList.Url({c:'wechat.wechat_news_category',a:'send_news',p:{id:str}}),{'w':1200});
-            }else{
-                layList.msg('请选择要发送客服图文消息的会员');
-            }
-        },
         refresh:function () {
             layList.reload();
         }
     };
-    $('.conrelTable').find('button').each(function () {
-        var type=$(this).data('type');
-        $(this).on('click',function () {
-            action[type] && action[type]();
-        })
-    })
-    $(document).on('click',".open_image",function (e) {
-        var image = $(this).data('image');
-        $eb.openImage(image);
-    })
+
+
+
+    // 图片上传 start
+    layui.use('upload', function(){
+        var $ = layui.jquery;
+        var upload = layui.upload;            
+        
+        upload.render({
+            elem: '#slide-pc',
+            url: '{:url('admin/pink.pink/upload_image')}',
+            //size: 500,
+            exts: 'jpg|png|jpeg',
+            multiple: true,
+            before: function(obj) {
+                layer.msg('图片上传中...', {
+                    icon: 16,
+                    shade: 0.01,
+                    time: 0
+                })
+            },
+            done: function(res) {
+                layer.close(layer.msg());//关闭上传提示窗口
+                if(res.code != 200) {
+                    return layer.msg(res.msg);
+                }
+                var html = '';
+                    html +='<li class="item_img">';
+                    
+                        html +='<div class="operate">';
+                            // html += '<i class="toleft layui-icon"></i>';
+                            // html += '<i class="toright layui-icon"></i>';
+                            html += '<i class="close layui-icon"></i>';
+                        html += '</div>';
+                        html += '<img src="' + res.data.url + '" class="img" >';
+                        // html += '<img src="__STATIC__/../' + res.data.url + '" class="img" >';
+                        html += '<input type="hidden" name="picture[]" value="' + res.data.url + '" />';
+                    
+                    html +='</li>';
+                
+                $('#slide-pc-priview').append(html);
+
+                    
+                //$('#slide-pc-priview').append('<input type="hidden" name="pc_src[]" value="' + res.filepath + '" />');
+                
+                // $('#slide-pc-priview').append('<li class="item_img"><div class="operate"><i class="toleft layui-icon"></i><i class="toright layui-icon"></i><i  class="close layui-icon"></i></div><img src="__STATIC__/../' + res.filepath + '" class="img" ><input type="hidden" name="pc_src[]" value="' + res.filepath + '" /></li>');
+            }
+        });
+
+
+
+        // 上传详情图 begin
+        upload.render({
+            elem: '#slide-detail',
+            url: '{:url('admin/pink.pink/upload_image')}',
+            //size: 500,
+            exts: 'jpg|png|jpeg',
+            multiple: true,
+            before: function(obj) {
+                layer.msg('图片上传中...', {
+                    icon: 16,
+                    shade: 0.01,
+                    time: 0
+                })
+            },
+            done: function(res) {
+                layer.close(layer.msg());//关闭上传提示窗口
+                if(res.code != 200) {
+                    return layer.msg(res.msg);
+                }
+                var html = '';
+                    html +='<li class="item_img">';
+                    
+                        html +='<div class="operate">';
+                            // html += '<i class="toleft layui-icon"></i>';
+                            // html += '<i class="toright layui-icon"></i>';
+                            html += '<i class="close layui-icon layui-icon-delete"></i>';
+                        html += '</div>';
+                        html += '<img src="' + res.data.url + '" class="img" >';
+                        // html += '<img src="__STATIC__/../' + res.data.url + '" class="img" >';
+                        html += '<input type="hidden" name="detail_image[]" value="' + res.data.url + '" />';
+                    
+                    html +='</li>';
+                
+                $('#slide-detail-preview').append(html);
+
+                //$('#slide-pc-priview').append('<input type="hidden" name="pc_src[]" value="' + res.filepath + '" />');
+                
+                // $('#slide-pc-priview').append('<li class="item_img"><div class="operate"><i class="toleft layui-icon"></i><i class="toright layui-icon"></i><i  class="close layui-icon"></i></div><img src="__STATIC__/../' + res.filepath + '" class="img" ><input type="hidden" name="pc_src[]" value="' + res.filepath + '" /></li>');
+            }
+        });
+        // 上传详情图 end
+
+
+    });
+
+    //点击多图上传的X,删除当前的图片    
+    $("body").on("click",".close",function(){
+        $(this).closest("li").remove();
+    });
+    //多图上传点击<>左右移动图片
+    $("body").on("click",".pic-more ul li .toleft",function(){
+        var li_index=$(this).closest("li").index();
+        if(li_index>=1){
+            $(this).closest("li").insertBefore($(this).closest("ul").find("li").eq(Number(li_index)-1));
+        }
+    });
+    $("body").on("click",".pic-more ul li .toright",function(){
+        var li_index=$(this).closest("li").index();
+        $(this).closest("li").insertAfter($(this).closest("ul").find("li").eq(Number(li_index)+1));
+    });
+   
+    // 图片上传 end
+
+
+
 </script>
 {/block}
