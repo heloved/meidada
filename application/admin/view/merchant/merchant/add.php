@@ -180,19 +180,19 @@
 
         if(len){
             layList.basePost(layList.Url({a:'save'}),where,function (res) {
+                
                 var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                  
                 //window.parent.location.reload();   //刷新父界面
+                parent.$(".J_iframe:visible")[0].contentWindow.location.reload();
+               
+                layList.msg(res.msg);
+                setTimeout(function () {
+                    parent.layer.close(index); //再执行关闭    
+                },1000);
                 
-
-                if(res.code == 200){
-                    layList.msg(res.msg);
-                    setTimeout(function () {
-                        parent.layer.close(index); //再执行关闭    
-                    },1000);
-                }else{
-                    layList.msg(res.msg);
-                }
+            },function(err){
+                layList.msg(res.msg);
             });
         }else{
             layList.msg('请完善信息后再提交');
