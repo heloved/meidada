@@ -76,8 +76,7 @@ class Pink extends AuthController
         $res['stop_time'] = date('Y-m-d H:i:s',$res['stop_time']);
         $res['top_img'] = explode(',',$res['picture']);
         $res['detail_img'] = explode(',',$res['detail_image']);
-
-        dump($res);
+        
 
         $this->assign('info',$res);
         return $this->fetch();
@@ -97,7 +96,8 @@ class Pink extends AuthController
                 return JsonService::fail('缺少参数');
             }
             $add_time=  Db::name('pink')->where('id',$post['id'])->value('add_time');
-            if(time()>$add_time){
+
+            if($post['status']==1&&time()>$add_time){
                 return JsonService::fail('拼团已开始，不能编辑');
             }
             
@@ -126,7 +126,7 @@ class Pink extends AuthController
                 //'directions'=>$post['directions'],
                 'shop_name'=>$post['shop_name'],
                 'notice'=>$post['notice'],
-                // 'status'   => $post['status']
+                 'status'   => $post['status']
             );
             $res = Db::name('pink')->where('id',$post['id'])->update($data);
 
